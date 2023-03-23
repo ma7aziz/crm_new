@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{%block title %}
+الرئيسية
+{% endblock%}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-3 col-md-6">
+        <div class="card">
+            <div class="card-body">
+                
+                <div class="text-center">
+                    <h6 class="text-muted mt-2 mb-2">اجمالي الطلبات المستلمة </h6>
+                    <h2>{{total_count}}</h2>
+                    <h5 class="text-success">{{new_count}} طلبات جديدة </h5>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="card">
+            <div class="card-body">
+         
+                    <div class="text-center">
+                        <h6 class="text-muted mt-2 mb-2">طلبات التركيب</h6>
+                        <h2>{{install_count}}</h2>
+                        <h5 class="text-success">{{install_new_count}} طلبات جديدة </h5>
+                    </div>
+ 
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="card">
+            <div class="card-body">
+         
+                    <div class="text-center">
+                        <h6 class="text-muted mt-2 mb-2">طلبات الصيانة</h6>
+                        <h2>{{repair_count}}</h2>
+                        <h5 class="text-success">{{repair_new_count}} طلبات جديدة </h5>
+                    </div>
+ 
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="card">
+            <div class="card-body">
+         
+                    <div class="text-center">
+                        <h6 class="text-muted mt-2 mb-2">الطلبات المعلقة</h6>
+                        <h2>{{on_hold_count}}</h2>
+                    </div>
+ 
+            </div>
+        </div>
+    </div>
+</div>
+<div>
+    <h3></h3>
+</div>
+
+{% endblock %}

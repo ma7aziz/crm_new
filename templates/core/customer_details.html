@@ -1,0 +1,138 @@
+{%extends 'base.html'%}
+{% load static %}
+{% block title %}{{customer}}{% endblock %}
+{% block content %}
+<div class="row page-titles">
+    <div class="col-md-5 col-12 align-self-center">
+        <h3 class="text-themecolor mb-0">بيانات العميل {{customer}}</h3>
+    </div>
+    <div class="col-md-7 col-12 align-self-center d-none d-md-flex justify-content-end">
+        <ol class="breadcrumb mb-0 p-0 bg-transparent">
+            <li class="breadcrumb-item active"><a href="">{{customer}}</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'core:customer_list' %}">العملاء</a></li>
+            <li class="breadcrumb-item d-flex align-items-center">Dashboard</li>
+        </ol>
+    </div>
+</div>
+
+        <div class="card">
+            <div class="card-header">
+                بيانات العميل 
+            </div>
+            <div class="card-body">
+
+                
+                <ul class="list-group">
+                    <li class="list-group-item text-muted">الاسم: <span class="text-primary">{{customer.name}}</span></li>
+                    <li class="list-group-item text-muted">رقم الجوال : <span
+                            class="text-primary">{{customer.phone_number}}</span>
+                    </li>
+                    <li class="list-group-item text-muted">العنوان : <span
+                            class="text-primary">{{customer.address}}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <p class="text-muted"> المدينة
+                            <span class="text-primary">{{customer.city}}</span> </p>
+
+                    </li>
+                    
+                </ul>
+
+
+
+            </div>
+        </div>
+        <div class="card ">
+            <div class="card-header">
+                الخدمات
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table search-table " id="serviceTable">
+                        <thead class="header-item bg-dark text-light text-center">
+                            <th>#</th>
+                            <th>رقم الطلب </th>
+                            <th>نوع الطلب </th>
+                            <th>البائع</th>
+                            <th>تاريخ الطلب</th>
+                            <th>حالة الطلب </th>
+
+                        </thead>
+                        <tbody>
+                            <!-- row -->
+                            {% for service in customer.service_set.all %}
+                            <tr class="search-items text-center {% if service.late %} bg-light-danger {% endif %}">
+                                <td>{{forloop.counter}} </td>
+                                <td>
+                                    <a href="{% url 'service:service_details' service.id %}">{{service.ref_number}}</a>
+                                </td>
+                
+                                <td>
+                                    <span class="badge rounded-pill 
+                                    {% if service.service_type == 'install' %}
+                                    bg-primary
+                                    {% elif service.service_type == 'repair' %}
+                                    bg-secondary
+                                    {% endif %}
+                                    ">
+                
+                                        {{service.get_service_type_display}}
+                                    </span>
+                                </td>
+                                <td><a href="{% url 'users:user_details' service.created_by.id %}">{{service.created_by}}</a></td>
+                                <td>{{service.created_at}}</td>
+                                <td>
+                                    <span class="badge rounded-pill 
+                                {% if service.status  == 'new' %}
+                                   bg-warning
+                                {% elif service.status == 'under_process' %}
+                                    bg-primary
+                                {% elif  service.status == 'done' or service.status  == 'closed' %}
+                                    bg-success
+                                {% endif %} 
+                                   ">
+                                    {{service.get_status_display}}
+                                    </span>
+                
+                                </td>
+                                
+                            </tr>
+                            {% endfor %}
+                            <!-- /.row -->
+                
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+{% endblock %}
+
+{% block script%}
+
+
+<script>
+    $(document).ready(function(){
+        $('#serviceTable').DataTable({
+            pageLength : 25,
+            ordering: false ,
+
+            "language": {
+                "paginate": {
+                    "next": "الصفحة التالية",
+                    "previous": "الصفحة السابقة"
+                            },
+                    "emptyTable":     "لا يوجد بيانات للعرض ",
+                    "info":           "عرض _START_ الي _END_ من _TOTAL_ طلبات",
+                    "infoEmpty":      "Showing 0 to 0 of 0 entries",
+                    "infoFiltered":   "(تم البحث في  _MAX_ طلب)",
+                    "search":         "البحث:",
+                    "zeroRecords":    "لا يوجد بيانات مطابقة للبحث",
+                    "lengthMenu":     "عرض _MENU_ طلب في الصفحة ",
+                
+            },
+            "pagingType": "numbers"
+
+        })
+    })
+</script>
+{% endblock %}

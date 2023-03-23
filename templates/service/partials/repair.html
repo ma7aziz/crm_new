@@ -1,0 +1,116 @@
+
+{% load static %}
+<div class="card card-body"  id="request_form">
+    <h4 class="mb-5 text-primary">طلب صيانة جديد </h4>
+    <form action="{% url 'service:add_service' %}" method="post" id="repair_form" enctype="multipart/form-data"  class="needs-validation" novalidate>
+        {% csrf_token %}
+        <input type="hidden" name="service_type" value="repair">
+        <div class="row">   
+            <div class="col-12 my-2">
+                
+                <label class="text-primary" for="">العميل</label>
+
+                <select name="customer" id="customerSelect" class="form-control" required />
+                        <option value=""></option>
+                </select>
+                <div class="invalid-feedback">
+                    <p>العميل مطلوب </p>
+                </div>
+            </div>
+            <div class="col-9 my-2">
+                <label class="text-primary" for="">العنوان</label>
+                <input type="text" name="address" class="form-control" id="cust_address" required >
+                <div class="invalid-feedback">
+                    <p>بيانات العميل مطلوبة </p>
+                </div>
+            </div>
+            <div class="col-3 my-2">
+                <label class="text-primary" for="">المدينة</label>
+                <input type="text" name="city" class="form-control" id="cust_city" required>
+                <div class="invalid-feedback">
+                    <p>بيانات العميل مطلوبة </p>
+                </div>
+            </div>
+            <div class="col-12 my-2">
+                <label class="text-primary" for="">الهاتف</label>
+                <input type="text" name="phone_number" class="form-control" id="cust_phone" required >
+                <div class="invalid-feedback">
+                    <p>بيانات العميل مطلوبة </p>
+                </div>
+            </div>
+            <div class="col-4 my-2">
+                <label class="text-primary" for="">نوع العميل</label>
+                <select name="customer_type" id="customer_type" class="form-control" required  onchange="customerTypeSelected()"/>
+                    <option value="" selected disabled >اختر نوع العميل</option>
+                    <option value="cash">نقدي</option>
+                    <option value="warranty">ضمان</option>
+                </select>
+
+                <div class="invalid-feedback">
+                    <p>نوع العميل مطلوب  </p>
+                </div>
+            </div>
+            <div class="col-4 my-2">
+                <label class="text-primary" for="">رقم الفاتورة</label>
+                <input type="text" name="invoice_number" id="" class="form-control">
+
+                <div class="invalid-feedback">
+                    <p>رقم الفاتورة مطلوب لعميل الضمان !!  </p>
+                </div>
+            </div>
+            <div class="col-4 my-2">
+                <label class="text-primary" for="">الشركة</label>
+                <select name="company" id="" class="form-control">
+                    <option value="" selected disabled >اختر الشركة صاحبة الضمان</option>
+                    {% for company in companies %}
+                    <option value="{{company.id}}">{{company}}</option>
+                    {% endfor %}
+                </select>
+
+                <div class="invalid-feedback">
+                    <p>رقم الفاتورة مطلوب لعميل الضمان !!  </p>
+                </div>
+            </div>
+
+            <div class="col-6 my-2">
+                <label class="text-primary" for="">نوع الجهاز</label>
+                <input type="text" name="machine_type" id="" class="form-control">
+            </div>
+
+            <hr class="m-2">
+            <div class="col-12">
+                <label class="text-primary" for="">ملاحظات / تفاصيل </label>
+                <textarea name="notes" id="" cols="3" rows="3" 
+                class="form-control"></textarea>
+            </div>
+            <hr class="m-2">
+            <div class="col-12">
+                <label class="text-primary" for="">ارفاق ملفات</label>
+                <input type="file" name="file" id="" multiple>
+            </div>
+        </div>
+
+        <input class="btn btn-success btn-lg my-3" type="submit" value="حــفظ">
+        <input class="btn btn-light-danger btn-lg my-3" 
+        onclick="location.reload();" value="الغاء">
+    </form>
+</div>
+
+
+{% block script %}
+<script src="{% static 'js/pages/service_requests.js' %}"></script>
+<script>
+
+    function customerTypeSelected() {
+        let customerType = document.querySelector('#customer_type').selectedOptions[0]
+            if (customerType.value == 'warranty') {
+                document.querySelector('input[name="invoice_number"]').required = true
+
+            } else {
+                document.querySelector('input[name="invoice_number"]').required = false
+            }
+        }
+
+
+</script>
+{% endblock script %}

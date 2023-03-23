@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="en">
+{% load static %}
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="">
+    <meta name="description" content="Bussiness Managment System .... under development !">
+    <meta name="robots" content="noindex,nofollow">
+    <title>
+        {% block title %} {% endblock %}
+    </title>
+
+    <!-- Favicon icon -->
+    <link rel="icon" type="image/png" sizes="16x16" href="">
+    <link rel="stylesheet" href="{% static 'asset/libs/apexcharts/dist/apexcharts.css' %}">
+    <!-- Custom CSS -->
+    <link href="{% static 'css/style.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/custom.css' %}" rel="stylesheet">
+
+    <!-- select 2  -->
+    <link rel="stylesheet" type="text/css" href="{% static 'asset/libs/select2/dist/css/select2.min.css' %}">
+    <link href="{% static 'asset/extra-libs/datatables.net-bs4/css/dataTables.bootstrap4.css' %}" rel="stylesheet">
+    <link rel="stylesheet" type="text/css"
+        href="{% static 'asset/extra-libs/datatables.net-bs4/css/responsive.dataTables.min.css' %}">
+
+</head>
+
+<style>
+    .pointer {
+        cursor: pointer;
+        transition: transform 0.3s;
+        
+    }
+    .pointer:hover{
+        transform: scale(1.05);
+        color: #11427e;
+
+    }
+</style>
+
+<body>
+
+    <!-- -------------------------------------------------------------- -->
+    <!-- Preloader - style you can find in spinners.css -->
+    <!-- -------------------------------------------------------------- -->
+    <!-- <div class="preloader">
+        <svg class="tea lds-ripple" width="37" height="48" viewbox="0 0 37 48" fill="none"
+            xmlns="http://www.w3.org/2000/svg">
+            <path
+                d="M27.0819 17H3.02508C1.91076 17 1.01376 17.9059 1.0485 19.0197C1.15761 22.5177 1.49703 29.7374 2.5 34C4.07125 40.6778 7.18553 44.8868 8.44856 46.3845C8.79051 46.79 9.29799 47 9.82843 47H20.0218C20.639 47 21.2193 46.7159 21.5659 46.2052C22.6765 44.5687 25.2312 40.4282 27.5 34C28.9757 29.8188 29.084 22.4043 29.0441 18.9156C29.0319 17.8436 28.1539 17 27.0819 17Z"
+                stroke="#2962FF" stroke-width="2"></path>
+            <path
+                d="M29 23.5C29 23.5 34.5 20.5 35.5 25.4999C36.0986 28.4926 34.2033 31.5383 32 32.8713C29.4555 34.4108 28 34 28 34"
+                stroke="#2962FF" stroke-width="2"></path>
+            <path id="teabag" fill="#2962FF" fill-rule="evenodd" clip-rule="evenodd"
+                d="M16 25V17H14V25H12C10.3431 25 9 26.3431 9 28V34C9 35.6569 10.3431 37 12 37H18C19.6569 37 21 35.6569 21 34V28C21 26.3431 19.6569 25 18 25H16ZM11 28C11 27.4477 11.4477 27 12 27H18C18.5523 27 19 27.4477 19 28V34C19 34.5523 18.5523 35 18 35H12C11.4477 35 11 34.5523 11 34V28Z">
+            </path>
+            <path id="steamL" d="M17 1C17 1 17 4.5 14 6.5C11 8.5 11 12 11 12" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" stroke="#2962FF"></path>
+            <path id="steamR" d="M21 6C21 6 21 8.22727 19 9.5C17 10.7727 17 13 17 13" stroke="#2962FF" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+    </div> -->
+    <!-- -------------------------------------------------------------- -->
+    <!-- Main wrapper - style you can find in pages.scss -->
+    <!-- -------------------------------------------------------------- -->
+    <div id="main-wrapper">
+
+        <!-- -------------------------------------------------------------- -->
+        <!-- Topbar header - style you can find in pages.scss -->
+        <!-- -------------------------------------------------------------- -->
+        <header class="topbar">
+            <nav class="navbar top-navbar navbar-expand-md navbar-dark">
+                <div class="navbar-header">
+                    <!-- This is for the sidebar toggle which is visible on mobile only -->
+                    <a class="nav-toggler waves-effect waves-light d-block d-md-none" href="javascript:void(0)">
+                        <i class="ri-close-line fs-6 ri-menu-2-line"></i>
+                    </a>
+                    <!-- -------------------------------------------------------------- -->
+                    <!-- Logo -->
+                    <!-- -------------------------------------------------------------- -->
+                    <a class="navbar-brand" href="/">
+                        <!-- Logo icon -->
+                        <b class="logo-icon">
+                            <!--You can put here icon as well // <i class="wi wi-sunset"></i> //-->
+                            <!-- Dark Logo icon -->
+                            <!-- <img src="" alt="homepage" class="dark-logo" /> -->
+                            <!-- Light Logo icon -->
+                            <!-- <img src="" alt="homepage" class="light-logo" /> -->
+                        </b>
+                        <!--End Logo icon -->
+                        <!-- Logo text -->
+                        <span class="logo-text">
+                            <!-- dark Logo text -->
+                            <!-- <img src="{% static 'asset/images/logo-text.png' %}" alt="homepage" class="dark-logo" /> -->
+                            <!-- Light Logo text -->
+                            <!-- <img src="{% static 'asset/images/logo-light-text.png' %}" class="light-logo" alt="homepage" /> -->
+                        </span>
+                    </a>
+                    <!-- -------------------------------------------------------------- -->
+                    <!-- End Logo -->
+                    <!-- -------------------------------------------------------------- -->
+                    <!-- -------------------------------------------------------------- -->
+                    <!-- Toggle which is visible on mobile only -->
+                    <!-- -------------------------------------------------------------- -->
+                    <a class="topbartoggler d-block d-md-none waves-effect waves-light" href="javascript:void(0)"
+                        data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><i
+                            data-feather="more-horizontal" class="feather-sm"></i></a>
+                </div>
+                <!-- -------------------------------------------------------------- -->
+                <!-- End Logo -->
+                <!-- -------------------------------------------------------------- -->
+                <div class="navbar-collapse collapse" id="navbarSupportedContent">
+                    <!-- -------------------------------------------------------------- -->
+                    <!-- toggle and nav items -->
+                    <!-- -------------------------------------------------------------- -->
+                    <ul class="navbar-nav me-auto">
+                        <!-- This is  -->
+                        <li class="nav-item"> <a
+                                class="nav-link sidebartoggler d-none d-md-block waves-effect waves-dark"
+                                href="javascript:void(0)"><i data-feather="menu" class="feather-sm"></i></a> </li>
+                    </ul>
+                    <!-- -------------------------------------------------------------- -->
+                    <!-- Right side toggle and nav items -->
+                    <!-- -------------------------------------------------------------- -->
+                    <ul class="navbar-nav justify-content-end">
+                        <!-- -------------------------------------------------------------- -->
+                        <!-- Search -->
+                        <!-- -------------------------------------------------------------- -->
+                        <!-- <li class="nav-item d-none d-md-block search-box"> <a
+                                class="nav-link d-none d-md-block waves-effect waves-dark" href="javascript:void(0)"><i
+                                    data-feather="search"></i></a>
+                            <form class="app-search">
+                                <input type="text" class="form-control" placeholder="Search & enter">
+                                <a class="srh-btn"><i data-feather="x" class="feather-sm"></i></a>
+                            </form>
+                        </li> -->
+                        <!-- -------------------------------------------------------------- -->
+                        <!-- Comment -->
+                        <!-- -------------------------------------------------------------- -->
+                       
+                        <!-- -------------------------------------------------------------- -->
+                        <!-- End Comment -->
+                        <!-- -------------------------------------------------------------- -->
+                        <!-- -------------------------------------------------------------- -->
+                        <!-- Messages -->
+                        <!-- -------------------------------------------------------------- -->
+                       
+                        <!-- -------------------------------------------------------------- -->
+                        <!-- End Messages -->
+                        <!-- -------------------------------------------------------------- -->
+                        <!-- -------------------------------------------------------------- -->
+
+                        <!-- -------------------------------------------------------------- -->
+
+                        <!-- Profile -->
+                        <!-- -------------------------------------------------------------- -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle waves-effect waves-dark" href="#"
+                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <img src="{% static 'img/user.jpg' %}" alt="user" width="30"
+                                    class="profile-pic rounded-circle" />
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-end user-dd animated flipInY">
+                                <div class="d-flex no-block align-items-center p-3 bg-primary text-white mb-2">
+                                    <div class="">
+                                        <!-- <img src="" alt="user" class="rounded-circle" width="60"> -->
+                                    </div>
+                                    <div class="ms-2">
+                                        <h4 class="mb-0 text-white">{{request.user}}</h4>
+                                        <p class=" mb-0">{{request.user.email}}</p>
+                                    </div>
+                                </div>
+
+                                <a class="dropdown-item" href=""><i data-feather="log-out"
+                                        class="feather-sm text-danger me-1 ms-1"></i> خروج</a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </header>
+        <!-- -------------------------------------------------------------- -->
+        <!-- End Topbar header -->
+        <!-- -------------------------------------------------------------- -->
+        <!-- -------------------------------------------------------------- -->
+        <!-- Left Sidebar - style you can find in sidebar.scss  -->
+        <!-- -------------------------------------------------------------- -->
+        <aside class="left-sidebar">
+            <!-- Sidebar scroll-->
+            <div class="scroll-sidebar">
+                <!-- Sidebar navigation-->
+                <nav class="sidebar-nav">
+                    <ul id="sidebarnav">
+                        <li class="sidebar-item user-profile">
+                            <a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)"
+                                aria-expanded="false">
+                                <!-- <img src="" alt="user"> -->
+                                <span class="hide-menu">{{request.user}} </span>
+                            </a>
+                            <ul aria-expanded="false" class="collapse  first-level">
+                                <!-- <li class="sidebar-item">
+                                    <a href="javascript:void(0)" class="sidebar-link p-0">
+                                        <i class="mdi mdi-adjust"></i>
+                                        <span class="hide-menu"> My Profile </span>
+                                    </a>
+                                </li> -->
+                                <li class="sidebar-item">
+                                    <a href="{% url 'users:logout' %}" class="sidebar-link p-0">
+                                        <i class="mdi mdi-adjust"></i>
+                                        <span class="hide-menu"> تسجيل الخروج</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        
+                        <li class="sidebar-item">
+                            <a class="sidebar-link  waves-effect waves-dark" href="{% url 'core:index' %}">
+                                <i data-feather="home" class="feather-icon"></i>
+                                <span class="hide-menu">الرئيـسـية </span>
+                            </a>
+
+                        </li>
+                        
+
+                        {% if request.user.is_Superuser or request.user.role == 'admin' %}
+                        <li class="sidebar-item">
+                            <a class="sidebar-link  waves-effect waves-dark" href="{% url 'service:install' %}">
+                                <!-- <i data-feather="home" class="feather-icon"></i> -->
+                                <i class="fa fa-wrench"></i>
+                                <span class="hide-menu">التركيب  </span>
+                            </a>
+
+                        </li>
+                        <li class="sidebar-item">
+                            <a class="sidebar-link  waves-effect waves-dark" href="{% url 'service:repair' %}">
+                                <!-- <i data-feather="home" class="feather-icon"></i> -->
+                                <i class="fas fa-cogs"></i>
+                                <span class="hide-menu">الصيانة </span>
+                            </a>
+
+                        </li>
+                        {% endif %}
+                        <li class="sidebar-item">
+                            <a class="sidebar-link  waves-effect waves-dark" href="{% url 'core:customer_list' %}">
+                                <i class="fas fa-users"></i>
+                                <span class="hide-menu">العملاء </span>
+                            </a>
+
+                        </li>
+                        {% if request.user.is_superuser%}
+                        <li class="sidebar-item">
+                            <a class="sidebar-link  waves-effect waves-dark" href="{% url 'users:user_list' %}">
+                                <i class="fas fa-user"></i>
+                                <span class="hide-menu">المستخدمين</span>
+                            </a>
+
+                        </li>
+                       {% endif %}
+                       
+                        {% if request.user.is_authenticated %}
+                        <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"
+                                href="{% url 'users:logout' %}" aria-expanded="false"><i data-feather="log-out"
+                                    class="feather-icon"></i><span class="hide-menu">Log Out</span></a></li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                <!-- End Sidebar navigation -->
+            </div>
+            <!-- End Sidebar scroll-->
+        </aside>
+        <!-- -------------------------------------------------------------- -->
+        <!-- End Left Sidebar - style you can find in sidebar.scss  -->
+        <!-- -------------------------------------------------------------- -->
+        <!-- -------------------------------------------------------------- -->
+        <!-- Page wrapper  -->
+        <!-- -------------------------------------------------------------- -->
+
+        <div class="page-wrapper">
+            <div class="d-flex justify-content-start my-2">
+                <button 
+                hx-trigger="click"
+                hx-get="/service/service_request?type=install"
+                hx-target="#page-body"
+                hx-swap="innerHTML"
+                class="btn btn-primary btn-rounded mt-3 mx-4 py-2"> <i class="fa fa-wrench"></i> طلب تركيب </button>
+                <button 
+                hx-trigger="click"
+                hx-get="/service/service_request?type=repair"
+                hx-target="#page-body"
+                hx-swap="innerHTML"
+                class=" text-light btn btn-success btn-rounded mt-3 mx-4 py-2" >  <i class="fas fa-cogs"></i> طلب صيانة</button>
+                {% if request.user.is_superuser %}
+                 <a href="{% url 'users:create_user' %}" class="text-light btn btn-primary btn-rounded mt-3 mx-4 py-2 text-light"><i class="fa fa-user"></i> مستخد جديد </a>
+                 {% endif %}
+
+            </div>
+            <!-- -------------------------------------------------------------- -->
+            <!-- Container fluid  -->
+            <!-- -------------------------------------------------------------- -->
+            <div class="container-fluid" id="page-body">
+                {% if messages %}
+                {% for message in messages %}
+                <div class="alert customize-alert alert-dismissible 
+                {% if 'success' in  message.tags %}
+                text-success alert-light-success 
+                {% elif 'error' in message.tags %}
+                text-danger alert-light-danger
+                {% else %} 
+                text-primary text-primary alert-light-primary
+                {% endif %}
+                fade show" role="alert">
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    <div class="d-flex align-items-center font-weight-medium">
+                        <i data-feather="info" class="text-primary feather-sm me-2 flex-shrink-0"></i>
+
+                        {{ message }}
+                    </div>
+                </div>
+                {% endfor %}
+                {% endif %}
+
+                {% block content %}
+                {% endblock %}
+            </div>
+            <!-- -------------------------------------------------------------- -->
+            <!-- End Container fluid  -->
+            <!-- -------------------------------------------------------------- -->
+        </div>
+        <!-- -------------------------------------------------------------- -->
+        <!-- End Page wrapper  -->
+        <!-- -------------------------------------------------------------- -->
+    </div>
+    <!-- -------------------------------------------------------------- -->
+    <!-- End Wrapper -->
+    <!-- -------------------------------------------------------------- -->
+    <!-- -------------------------------------------------------------- -->
+    <!-- customizer Panel -->
+    <!-- -------------------------------------------------------------- -->
+
+    <!-- -------------------------------------------------------------- -->
+    <!-- All Jquery -->
+    <!-- -------------------------------------------------------------- -->
+    <script src="{% static 'asset/libs/jquery/dist/jquery.min.js' %}"></script>
+    <!-- Bootstrap tether Core JavaScript -->
+    <script src="{% static 'asset/libs/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+    <!-- apps -->
+    <script src="{% static 'js/app.min.js' %}"></script>
+    <script src="{% static 'js/app.init.js' %}"></script>
+    <script src="{% static 'js/app-style-switcher.js' %}"></script>
+    <!-- slimscrollbar scrollbar JavaScript -->
+    <script src="{% static 'asset/libs/perfect-scrollbar/dist/perfect-scrollbar.jquery.min.js' %}"></script>
+    <script src="{% static 'asset/extra-libs/sparkline/sparkline.js' %}"></script>
+    <!--Wave Effects -->
+    <script src="{% static 'js/waves.js' %}"></script>
+    <!--Menu sidebar -->
+    <script src="{% static 'js/sidebarmenu.js' %}"></script>
+    <!--Custom JavaScript -->
+    <script src="{% static 'js/feather.min.js' %}"></script>
+    <script src="{% static 'js/custom.min.js' %}"></script>
+
+    <script src="{% static 'asset/libs/select2/dist/js/select2.full.min.js' %}"></script>
+    <script src="{% static 'asset/libs/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js' %}"></script>
+    <script src="{% static 'asset/extra-libs/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+    <script src="https://unpkg.com/htmx.org@1.8.6"></script>
+    <script>
+        
+    (function () {
+        'use strict'
+      
+        // Fetch all the forms we want to apply custom Bootstrap validation styles to
+        var forms = document.querySelectorAll('.needs-validation')
+      
+        // Loop over them and prevent submission
+        Array.prototype.slice.call(forms)
+          .forEach(function (form) {
+            form.addEventListener('submit', function (event) {
+              if (!form.checkValidity()) {
+                event.preventDefault()
+                event.stopPropagation()
+              }
+      
+              form.classList.add('was-validated')
+            }, false)
+          })
+      })()
+    </script>
+    {% block script %}
+    
+    {% endblock %}
+</body>
+
+</html>
