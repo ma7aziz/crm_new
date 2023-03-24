@@ -60,6 +60,7 @@ class CreateUser( PermissionRequiredMixin , generic.View ):
     
     def post(self , request):
         form  = CreateUserForm(request.POST)
+        
         if form.is_valid():
             user = form.save()
             messages.success(request , 'تم أضافة مستخدم جديد !')
@@ -89,6 +90,8 @@ class EditUserDetails( generic.View):
             user.role = request.POST['role'] 
             user.favourite_qouta = request.POST['favourite_qouta']
             
+            user.install = bool(request.POST.get('install', False))
+            user.repair = bool(request.POST.get('repair', False))
             user.save()
             messages.success(request , 'تم تحديث بيانات المستخدم !')
             

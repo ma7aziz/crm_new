@@ -12,6 +12,8 @@ class User(AbstractUser):
     role = models.CharField(choices=USER_ROLES , default='sales' , max_length=25)
     profile_pic = models.ImageField(upload_to='users/profile_pics' , blank=True , null=True )
     favourite_qouta = models.PositiveIntegerField(default=3)
+    install = models.BooleanField(default=False)
+    repair = models.BooleanField(default=False)
     
     USERNAME_FIELD = 'username'
 

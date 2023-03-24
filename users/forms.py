@@ -5,7 +5,9 @@ class CreateUserForm(UserCreationForm):
 
     class Meta:
         model = models.User
-        fields = ('username', 'name','password1' ,'password2' , 'phone_number', 'role',  'favourite_qouta')
+        install =  forms.BooleanField(label='التركيب' , required=False)
+        repair = forms.BooleanField(label='الصيانة' , required=False)
+        fields = ('username', 'name','password1' ,'password2' , 'phone_number', 'role',  'favourite_qouta' , 'install' , 'repair') 
         labels = {
             'username': 'اسم المستخدم',
             'name': 'الاسم الكامل ',
@@ -21,5 +23,6 @@ class CreateUserForm(UserCreationForm):
             'role': forms.Select(attrs={'required': True}),
             'password1': forms.PasswordInput(attrs={'required': True} ),
             'password2': forms.PasswordInput(attrs={'required': True}),
-            'favourite_qouta' : forms.NumberInput(attrs={'required' : True })
+            'favourite_qouta' : forms.NumberInput(attrs={'required' : True }) ,
+
         }

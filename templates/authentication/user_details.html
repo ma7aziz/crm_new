@@ -60,14 +60,12 @@
                     <li class="list-group-item d-flex justify-content-between">
                         <p class="text-muted"> عدد مفضلات التركيب/ الصيانة المسموح بها :
                             <span class="text-primary">{{user.favourite_qouta}}</span> </p>
-
-                        <a href=""><i data-feather="edit"></i></a>
                     </li>
                     <li class="list-group-item text-muted">
-                        عدد المفضلات المتبقي لليوم : <span></span>
+                        عدد المفضلات المتبقي لليوم : <span class="text-primary">{{user.remaining_qouta}}</span>
                     </li>
                     <li class="list-group-item text-muted">
-                        الخدمات المسموحة للمستخدم : <span></span>
+                        الخدمات المسموحة للمستخدم : <span class="text-primary"> {% if user.install %} التركيب {% endif %}</span>  <span class="text-primary">{% if user.repair %}  الصيانة{% endif %}</span>
                     </li>
                 </ul>
 
@@ -78,8 +76,55 @@
     </div>
     <div class="col-lg-6">
         <div class="card">
+            <div class="card-header">
+                تاريخ المستخدم
+            </div>
             <div class="card-body">
-
+                <h6>الطلبات المستلمة </h6>
+                <div class="table-responsive">
+                    <table class="table search-table " id="serviceTable">
+                        <thead class="header-item bg-dark text-light text-center">
+                            <th>#</th>
+                            <th>رقم الطلب </th>
+                            <th>اسم العميل </th>
+                            <th>التاريخ</th>
+                            <th>حالة الطلب </th>
+                        </thead>
+                        <tbody>
+                            <!-- row -->
+                            {% for service in user.service_set.all %}
+                            <tr class="search-items text-center {% if service.late %} bg-light-danger {% endif %}">
+                                <td>{{forloop.counter}} </td>
+                                <td>
+                                    <a href="{% url 'service:service_details' service.id %}">{{service.ref_number}}</a>
+                                </td>
+            
+            
+                                <td> {{service.customer}}</td>
+                                
+                                <td>{{service.created_at.date}}</td>
+                                <td>
+                                    <span class="badge rounded-pill 
+                                {% if service.status  == 'new' %}
+                                   bg-warning
+                                {% elif service.status == 'under_process' %}
+                                    bg-primary
+                                {% elif  service.status == 'done' or service.status  == 'closed' %}
+                                    bg-success
+                                {% endif %} 
+                                   ">
+                                        {{service.get_status_display}}
+                                    </span>
+            
+                                </td>
+                                
+                            </tr>
+                            {% endfor %}
+                            <!-- /.row -->
+            
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -133,4 +178,29 @@
 
 {% block script %}
 <script src="{% static 'js/pages/validate_user_creation.js' %}"></script>
+<script>
+    $(document).ready(function () {
+        $('#serviceTable').DataTable({
+            pageLength: 50,
+            ordering: false,
+            scrollY: 350,
+            "language": {
+                "paginate": {
+                    "next": "الصفحة التالية",
+                    "previous": "الصفحة السابقة"
+                },
+                "emptyTable": "لا يوجد بيانات للعرض ",
+                "info": "عرض _START_ الي _END_ من _TOTAL_ طلبات",
+                "infoEmpty": "Showing 0 to 0 of 0 entries",
+                "infoFiltered": "(تم البحث في  _MAX_ طلب)",
+                "search": "البحث:",
+                "zeroRecords": "لا يوجد بيانات مطابقة للبحث",
+                "lengthMenu": "",
+
+            },
+            "pagingType": "numbers"
+
+        })
+    })
+</script>
 {% endblock %}
