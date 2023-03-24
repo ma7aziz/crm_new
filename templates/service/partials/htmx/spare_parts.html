@@ -22,7 +22,7 @@
                     </td>
     
     
-                    <td> <a href="{% url 'core:customer_details' service.service.customer.id %}">{{service.service.customer.name}}</a></td>
+                    <td> {{service.service.customer}}</td>
                     <td>{{service.requested_parts}}</td>
                     <td>{{service.service.company}}</td>
                     <td>{{service.created_at.date}}</td>

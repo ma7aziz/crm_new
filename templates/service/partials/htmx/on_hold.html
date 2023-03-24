@@ -24,8 +24,8 @@
                     </td>
     
     
-                    <td> <a href="{% url 'core:customer_details' service.customer.id %}">{{service.customer.name}}</a></td>
-                    <td>{{service.customer.phone_number}}</td>
+                    <td> {{service.customer}}</td>
+                    <td>{{service.phone_number}}</td>
                     <td><a href="{% url 'users:user_details' service.created_by.id %}">{{service.created_by}}</a></td>
                     <td>{{service.created_at.date}}</td>
                     <td>

@@ -64,13 +64,13 @@
 </div>
 
 <div class="row text-center">
-    <div class="col-lg-3 col-6 pointer"
+    <div class="col-lg-3 col-6 pointer border "
         hx-trigger="click"
         hx-get="/service/get_data?service=repair&data=upcoming_appoints"
         hx-target="#displayData"
         hx-swap="innerHTML">
-        <div  class="card card-body">
-             عرض مواعيد الصيانة القادمة 
+        <div  class="card card-body border border-primary">
+             مواعيد الصيانة القادمة 
         </div>
     </div>
     <div class="col-lg-3 col-6 pointer"
@@ -78,9 +78,9 @@
         hx-get="/service/get_data?service=repair&data=late_services"
         hx-target="#displayData"
         hx-swap="innerHTML">
-        <div class="card card-body">
+        <div class="card card-body border border-danger">
 
-            عرض الطلبات المتأخرة
+            الطلبات المتأخرة
         </div>
     </div>
     <div class="col-lg-3 col-6 pointer"
@@ -88,9 +88,9 @@
         hx-get="/service/get_data?service=repair&data=on_hold"
         hx-target="#displayData"
         hx-swap="innerHTML">
-        <div class="card card-body">
+        <div class="card card-body border border-warning">
 
-            عرض الطلبات المعلقة
+            الطلبات المعلقة
         </div>
     </div>
     <div class="col-lg-3 col-6 pointer"
@@ -98,7 +98,7 @@
         hx-get="/service/get_data?service=repair&data=spare_parts"
         hx-target="#displayData"
         hx-swap="innerHTML">
-        <div class="card card-body">
+        <div class="card card-body border border-success">
             طلبات قطع الغيار
         </div>
     </div>
@@ -129,8 +129,8 @@
                     </td>
     
 
-                    <td> <a href="{% url 'core:customer_details' service.customer.id %}">{{service.customer.name}}</a></td>
-                    <td>{{service.customer.phone_number}}</td>
+                    <td>{{service.customer}}</td>
+                    <td>{{service.phone_number}}</td>
                     <td><a href="{% url 'users:user_details' service.created_by.id %}">{{service.created_by}}</a></td>
                     <td>{{service.created_at.date}}</td>
                     <td>

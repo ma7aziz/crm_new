@@ -80,9 +80,9 @@
                     </td>
 
 
-                    <td> <a href="{% url 'core:customer_details' service.customer.id %}">{{service.customer.name}}</a>
+                    <td> {{service.customer}}
                     </td>
-                    <td>{{service.customer.phone_number}}</td>
+                    <td>{{service.phone_number}}</td>
                     <td>
                         <span class="badge rounded-pill 
                         {% if service.service_type == 'install' %}

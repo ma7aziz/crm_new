@@ -40,11 +40,10 @@
                         {% endif %} 
                            ">{{service.get_status_display}}</span>
                     </li>
-                    <li class="list-group-item">العميل: <span class="text-primary"><a
-                                href="{% url 'core:customer_details'  service.customer.id %}">{{service.customer}}</a></span>
+                    <li class="list-group-item">العميل: <span class="text-primary">{{service.customer}}</span>
                     </li>
                     <li class="list-group-item">رقم الجوال: <span
-                            class="text-primary">{{service.customer.phone_number}}</span></li>
+                            class="text-primary">{{service.phone_number}}</span></li>
                     <li class="list-group-item">العنوان: <span class="text-primary">{{service.address}} -
                             {{service.city}}</span></li>
                     <li class="list-group-item">نوع الطلب : <span class=" badge  p-2
@@ -201,7 +200,7 @@
                     <button class="btn btn-danger my-1" data-bs-toggle="modal" data-bs-target="#delete_approve"><i
                             data-feather="trash-2"></i> حذف </button>
                     {% endif %}
-                    {% if appointment and service.status == 'under_process' and request.user.role == 'repair_supervisor' or request.user.role == 'install_supervisor'   or request.user == appointment.technician %}
+                    {% if appointment and service.status == 'under_process' and request.user.role == 'repair_supervisor' or request.user.role == 'install_supervisor'   or request.user == appointment.technician or request.user.is_superuser %}
                     <button class="btn btn-success my-2 " data-bs-target="#confirm_excution" data-bs-toggle="modal"> <i data-feather="check-circle"></i>  تأكيد التنفيذ</button>
                     
                     {% endif %}

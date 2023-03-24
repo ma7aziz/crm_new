@@ -30,11 +30,11 @@ class Index(generic.View):
                     'id', filter=Q(status='under_process')),
                 on_hold_count=Count('id', filter=Q(status='hold'))
             )
-
+            
+            new_requests = Service.objects.all().filter(status = 'new')
             template = 'core/index.html'
             ctx = {
                 'total_count': counts['total_counts'],
-
                 'repair_count': counts['repair_count'],
                 'repair_new_count': counts['repair_new_count'],
                 'install_count': counts['install_count'],
@@ -42,6 +42,8 @@ class Index(generic.View):
                 'new_count': counts['new_count'],
                 'under_process_count': counts['under_process_count'],
                 'on_hold_count': counts['on_hold_count'],
+                'new_requests' : new_requests
+                
             }
         elif request.user.role == 'sales':
             template = 'core/sales_index.html'
@@ -116,6 +118,7 @@ class CreateCustomerView(generic.CreateView):
 
     def form_valid(self, form):
         form.instance.created_by = self.request.user
+        form.save()
         messages.success(self.request, 'تم اضافة العميل !')
         return redirect(self.request.META.get('HTTP_REFERER'))
 

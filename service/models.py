@@ -25,8 +25,8 @@ status_ordering = Case(
 
 class Service(models.Model):
     ref_number = models.CharField(max_length=15, blank=True, null=True)
-    customer = models.ForeignKey(
-        Customer,  on_delete=models.SET_NULL, null=True)
+    customer = models.CharField(max_length=255  , null = True , blank=True )
+    phone_number = models.CharField(max_length=255 , null = True , blank=True )
     address = models.CharField(max_length=255, blank=True, null=True)
     customer_type = models.CharField(
         max_length=15, choices=CUSTOMER_TYPE, default='cash')

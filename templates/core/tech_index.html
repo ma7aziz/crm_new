@@ -41,9 +41,9 @@
                     </td>
 
 
-                    <td> <a href="{% url 'core:customer_details' app.service.customer.id %}">{{app.service.customer.name}}</a>
+                    <td> {{app.service.customer}}
                     </td>
-                    <td><a href="tel:{{app.service.customer.phone_number}}">{{app.service.customer.phone_number}}</a></td>
+                    <td><a href="tel:{{app.service.phone_number}}">{{app.service.phone_number}}</a></td>
                     <td>{{app.service.get_service_type_display}}</td>
                     <td>{{app.date}}</td>
                     

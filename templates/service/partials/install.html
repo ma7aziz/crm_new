@@ -1,47 +1,38 @@
 {% load static %}
 {% load widget_tweaks %}
 <div class="card card-body" id="request_form">
-    <h4 class="mb-5 text-primary">طلب تركيب جديد </h4>
+    <h2 class="mb-3 text-primary text-center">طلب تركيب جديد </h2>
     <form action="{% url 'service:add_service' %}" method="post" id="install_form" class="needs-validation"
         enctype="multipart/form-data" novalidate>
         {% csrf_token %}
         <input type="hidden" name="service_type" value="install">
         <input type="hidden" name="customer_type" value="cash">
         <div class="row">
-            <div class="form-check">
+
+            <div class="form-check col-12">
                 {% if request.user.remaining_qouta  or request.user.is_superuser or request.user.role == 'install_supervisor' %}
                 <input class="form-check-input" name="favourite" type="checkbox" value="" id="flexCheckDefault">
-                <label class="form-check-label fw-bold" for="flexCheckDefault">
+                <label class="form-check-label fw-bold text-success mx-1" for="flexCheckDefault">
                     تفضيل الطلب
                 </label>
                 {% endif %}
             </div>
             <div class="col-12 my-2">
-                <label class="text-primary" for="">العميل</label>
-                <select name="customer" id="customerSelect" class="form-control" required>
-                    <option value=""></option>
-                </select>
-                <div class="my-1">
-                    <a class="btn btn-light-primary" href="#" data-bs-toggle="modal"
-                        data-bs-target="#addCustomerModal">عميل جديد </a></div>
+                <label for="" class="text-primary">الاسم</label>
+                <input type="text" name="customer" id="" required class="form-control">
+       
                 <div class="invalid-feedback">
                     <p>العميل مطلوب </p>
                 </div>
             </div>
-            <div class="col-9 my-2">
-                <label class="text-primary" for="">العنوان</label>
+            <div class="col-12 my-2">
+                <label class="text-primary" for="">الموقع</label>
                 <input type="text" name="address" class="form-control" id="cust_address" required>
                 <div class="invalid-feedback">
                     <p>بيانات العميل مطلوبة </p>
                 </div>
             </div>
-            <div class="col-3 my-2">
-                <label class="text-primary" for="">المدينة</label>
-                <input type="text" name="city" class="form-control" id="cust_city" required>
-                <div class="invalid-feedback">
-                    <p>بيانات العميل مطلوبة </p>
-                </div>
-            </div>
+            
             <div class="col-12 my-2">
                 <label class="text-primary" for="">الهاتف</label>
                 <input type="text" name="phone_number" class="form-control" id="cust_phone" required>
@@ -57,11 +48,6 @@
                 <div class="invalid-feedback">
                     <p> </p>
                 </div>
-            </div>
-
-            <div class="col-6 my-2">
-                <label class="text-primary" for="">نوع الجهاز</label>
-                <input type="text" name="machine_type" id="" class="form-control">
             </div>
 
             <hr class="m-2">
