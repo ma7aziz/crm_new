@@ -4,6 +4,12 @@ from django.db.models import Max
 
 from . import models
 
+from core.models import LateDays
+from django.utils import timezone
+from django.db.models.functions import Cast
+from django.db.models import Q ,  DateField
+from datetime import timedelta
+
 def generate_ref_number(service_type):
 
     prefix = 'INS' if service_type == 'install' else 'REP'
@@ -19,3 +25,23 @@ def generate_ref_number(service_type):
     last_number = int(last_ref_number[-3:])
     new_number = f'{last_number+1:03d}'
     return f'{prefix}{year}{new_number}'
+
+
+def get_late_count(service):
+    
+    days = LateDays.objects.last().days
+    threshold_date = timezone.now() - timedelta(days=days - 1)
+    if service == 'install' :
+        late_orders_count = models.Service.objects.install().annotate(
+            created_date=Cast('created_at', DateField())
+        ).filter(
+            Q(status='new') & Q(created_date__lte=threshold_date)
+        ).count()
+    elif service == 'repair' :
+        late_orders_count = models.Service.objects.repair().annotate(
+            created_date=Cast('created_at', DateField())
+        ).filter(
+            Q(status='new') & Q(created_date__lte=threshold_date)
+        ).count()
+    
+    return late_orders_count

@@ -17,46 +17,50 @@
     <div class="col-lg-3 col-md-6">
         <div class="card">
             <div class="card-body">
-                
+
                 <div class="text-center">
                     <h6 class="text-muted mt-2 mb-2">اجمالي الطلبات المستلمة </h6>
                     <h2>{{total_count}}</h2>
                 </div>
-                
+
             </div>
         </div>
     </div>
-    <div class="col-lg-3 col-md-6">
-        <div class="card">
-            <div class="card-body">
-         
-                    <div class="text-center">
-                        <h6 class="text-muted mt-2 mb-2">الطلبات المعلقة</h6>
-                        <h2>{{on_hold_count}}</h2>
-                    </div>
- 
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-3 col-md-6">
-        <div class="card">
-            <div class="card-body">
-                    <div class="text-center">
-                        <h6 class="text-muted mt-2 mb-2">طلبات جديدة </h6>
-                        <h2>{{new_count}}</h2>
-                    </div>
-                
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-3 col-md-6">
+    <div class="col-lg-3 col-md-6 pointer"
+    hx-trigger="click" hx-get="/service/get_data?service=repair&data=on_hold"
+        hx-target="#displayData" hx-swap="innerHTML">
         <div class="card">
             <div class="card-body">
 
-                    <div class="text-center">
-                        <h6 class="text-muted mt-2 mb-2">طلبات جاري تنفيذها </h6>
-                        <h2>{{under_process_count}}</h2>
-                    </div>
+                <div class="text-center">
+                    <h6 class="text-muted mt-2 mb-2">الطلبات المعلقة</h6>
+                    <h2>{{on_hold_count}}</h2>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6 pointer"
+    hx-trigger="click" hx-get="/service/get_data?service=repair&data=new"
+        hx-target="#displayData" hx-swap="innerHTML">
+        <div class="card">
+            <div class="card-body">
+                <div class="text-center">
+                    <h6 class="text-muted mt-2 mb-2">طلبات جديدة </h6>
+                    <h2>{{new_count}}</h2>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6 pointer" hx-trigger="click" hx-get="/service/get_data?service=repair&data=under_process"
+    hx-target="#displayData" hx-swap="innerHTML">
+        <div class="card">
+            <div class="card-body">
+                <div class="text-center">
+                    <h6 class="text-muted mt-2 mb-2">طلبات جاري تنفيذها </h6>
+                    <h2>{{under_process_count}}</h2>
+                </div>
 
             </div>
         </div>
@@ -64,44 +68,20 @@
 </div>
 
 <div class="row text-center">
-    <div class="col-lg-3 col-6 pointer border "
-        hx-trigger="click"
-        hx-get="/service/get_data?service=repair&data=upcoming_appoints"
-        hx-target="#displayData"
-        hx-swap="innerHTML">
-        <div  class="card card-body border border-primary">
-             مواعيد الصيانة القادمة 
+    <div class="col-6 pointer" hx-trigger="click" hx-get="/service/get_data?service=repair&data=upcoming_appoints"
+        hx-target="#displayData" hx-swap="innerHTML">
+        <div class="card card-body border border-primary">
+         مواعيد الصيانة القادمة  <span class="fw-bold">{{upcoming_appointments_count}}  </span> 
         </div>
     </div>
-    <div class="col-lg-3 col-6 pointer"
-        hx-trigger="click"
-        hx-get="/service/get_data?service=repair&data=late_services"
-        hx-target="#displayData"
-        hx-swap="innerHTML">
+    <div class="col-6 pointer" hx-trigger="click" hx-get="/service/get_data?service=repair&data=late_services"
+        hx-target="#displayData" hx-swap="innerHTML">
         <div class="card card-body border border-danger">
-
             الطلبات المتأخرة
+            <span class="fw-bold"> {{late_count}}</span>
         </div>
     </div>
-    <div class="col-lg-3 col-6 pointer"
-    hx-trigger="click"
-        hx-get="/service/get_data?service=repair&data=on_hold"
-        hx-target="#displayData"
-        hx-swap="innerHTML">
-        <div class="card card-body border border-warning">
-
-            الطلبات المعلقة
-        </div>
-    </div>
-    <div class="col-lg-3 col-6 pointer"
-    hx-trigger="click"
-        hx-get="/service/get_data?service=repair&data=spare_parts"
-        hx-target="#displayData"
-        hx-swap="innerHTML">
-        <div class="card card-body border border-success">
-            طلبات قطع الغيار
-        </div>
-    </div>
+    
 </div>
 <div id="displayData">
 

@@ -10,10 +10,12 @@ from django.db import transaction
 import datetime
 from users.models import User
 from django.shortcuts import get_object_or_404
-from django.db.models import Case, When, Count, Q
+from django.db.models import Case, When, Count, Q 
 from django.db import models as md
 from core.decorators import allowed_roles
 from django.utils.decorators import method_decorator
+from .utils import get_late_count
+
 # Create your views here.
 
 
@@ -73,10 +75,14 @@ class InstallListView( generic.ListView):
             total_count=Count('id'),
             on_hold_count=Count('id', filter=Q(hold=True)),
             new_count=Count('id', filter=Q(status='new')),
-            under_process_count=Count('id', filter=Q(status='under_process'))
+            under_process_count=Count('id', filter=Q(status='under_process' , hold= False)) ,
+            new_favs = Count('id' , filter = Q(status = 'new' , favourite = True)) ,
+            current_favs = Count('id' , filter = Q(status = 'under_process' , favourite = True , hold= False)) ,
         )
         kwargs.update(counts)
 
+        kwargs['upcoming_appointments_count'] = models.Appointment.objects.upcoming_install().only('id').count() 
+        kwargs['late_count'] = get_late_count('install')    
         return super().get_context_data(**kwargs)
 
 @method_decorator(allowed_roles(['admin' , 'repair_supervisor']) ,name='dispatch' )
@@ -105,8 +111,12 @@ class RepairListView(generic.ListView):
         total_count=Count('id'),
         on_hold_count=Count('id', filter=Q(hold=True)),
         new_count=Count('id', filter=Q(status='new')),
-        under_process_count=Count('id', filter=Q(status='under_process')))
+        under_process_count=Count('id', filter=Q(status='under_process' ,  hold= False)),
+        new_favs = Count('id' , filter = Q(status = 'new' , favourite = True)) ,
+        current_favs = Count('id' , filter = Q(status = 'under_process' , favourite = True ,   hold= False)) )
         kwargs.update(counts)
+        kwargs['upcoming_appointments_count'] = models.Appointment.objects.upcoming_repair().only('id').count() 
+        kwargs['late_count'] = get_late_count('repair')  
         return super().get_context_data(**kwargs)
 
 class CreateService(generic.CreateView):
@@ -154,20 +164,6 @@ class ServiceDetails(generic.DetailView):
     context_object_name = 'service'
     template_name = 'service/service_details.html'
 
-    # def get(self, request , *args, **kwargs):
-    #     '''
-    #     Prevent user accessing services that he didn't create !
-    #     '''
-    #     self.object  = self.get_object()
-
-    #     allowed_roles =['admin' ,'repair_supervisor' ,'install_supervisor']
-    #     if self.request.user == self.object.created_by or self.request.user.role in allowed_roles :  
-    #         return super().get(request, *args, **kwargs)
-    #     else:
-    #         messages.warning(request, 'You are not authorized to view this page. Redirecting to home page...')
-    #         return redirect(reverse_lazy('core:index'))
-        
-    
 
     def get_context_data(self, **kwargs):
         if self.object.hold:
@@ -409,11 +405,15 @@ def render_service_data(request):
     service = request.GET['service']
     data = request.GET['data']
     templates = {
+        ('install' , 'new') : base_temp_name + 'new_services.html',
+        ('install' , 'under_process') : base_temp_name + 'under_process.html',
         ('install', 'upcoming_appoints'): base_temp_name + 'upcoming_appointments.html',
         ('install', 'late_services'): base_temp_name + 'late_services.html',
         ('install', 'on_hold'): base_temp_name + 'on_hold.html',
         ('install' , 'new_favourite') : base_temp_name + 'favs.html' ,
         ('install' , 'processing_favourite') : base_temp_name + 'favs.html' ,
+        ('repair' , 'new') : base_temp_name + 'new_services.html',
+        ('repair' , 'under_process') : base_temp_name + 'under_process.html',
         ('repair', 'upcoming_appoints'): base_temp_name + 'upcoming_appointments.html',
         ('repair', 'late_services'): base_temp_name + 'late_services.html',
         ('repair', 'on_hold'): base_temp_name + 'on_hold.html' ,
@@ -425,13 +425,21 @@ def render_service_data(request):
     late_repair_services = [
             service for service in late_services if service.service_type == 'repair']
     late_install_services = [
-            service for service in late_services if service.service_type == 'repair']
+            service for service in late_services if service.service_type == 'install']
     ctxs = {
         ('install', 'upcoming_appoints'): {
             'appointments': models.Appointment.objects.upcoming_install()
         },
         ('install', 'late_services'): {
             'services': late_install_services
+        },
+        ('install', 'new'): {
+            'services': models.Service.objects.new().filter(service_type='install'),
+            'title' : 'طلبات التركيب الجديدة '
+        },
+        ('install', 'under_process'): {
+            'services': models.Service.objects.under_process().filter(service_type='install').exclude(hold = True),
+            'title' : 'طلبات التركيب الجارية '
         },
         ('install', 'on_hold'): {
             'services': models.Service.objects.hold().filter(service_type='install')
@@ -446,6 +454,14 @@ def render_service_data(request):
         },
         ('repair', 'upcoming_appoints'): {
             'appointments': models.Appointment.objects.upcoming_repair()
+        },
+         ('repair', 'new'): {
+            'services': models.Service.objects.new().filter(service_type='repair') ,
+            'title' : 'طلبات الصيانة الجديدة '
+        },
+        ('repair', 'under_process'): {
+            'services': models.Service.objects.under_process().filter(service_type='repair').exclude(hold = True),
+            'title' : 'طلبات الصيانة الجارية '
         },
         ('repair', 'late_services'): {
             'services': late_repair_services
