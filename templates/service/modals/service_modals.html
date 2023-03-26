@@ -1,4 +1,6 @@
 
+<!-- Hold service  -->
+
 <div class="modal custom-modal fade" id="hold_service" role="dialog" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -14,7 +16,23 @@
                             {% csrf_token%}
                             <input type="hidden" name="service" value="{{service.id}}">
                             <div class="form-group">
-                                <label for="">سبب التعليق </label>
+                                <label for="">سبب التعليق</label>
+                                <select name="reason" id="hold_reason_select" class="form-control" onchange="reasonSelect()">
+                                    <option value="" disabled selected>اختر سبب التعليق </option>
+                                    <option value="spare_parts">قطع غيار مطلوبة</option>
+                                    <option value="other">سبب أخر </option>
+                                </select>
+                            </div>
+
+
+
+                            <div class="form-group hide" id="spare_parts_input_group">
+                                <label for="">قطع الغيار المطلوبة </label>
+                                <input type="text" name="spare_parts" id="sp_input" class="form-control">
+                                <p class="invalid-feedback">قطع الغيار مطلوبة !!</p>
+                            </div>
+                            <div class="form-group">
+                                <label for="">التفاصيل</label>
                                 <textarea name="hold_reason" id="" cols="30" rows="3" required
                                     class="form-control"></textarea>
                                 <p class="invalid-feedback">سبب التعليق مطلوب !! </p>
@@ -39,7 +57,7 @@
         </div>
     </div>
 </div>
-
+<!-- confirm delete  -->
 <div class="modal custom-modal fade" id="delete_approve" role="dialog" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -68,6 +86,8 @@
         </div>
     </div>
 </div>
+
+<!-- Change appointment status  -->
 <div class="modal custom-modal fade" id="change_status" role="dialog" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -113,7 +133,7 @@
         </div>
     </div>
 </div>
-
+<!-- Edit appointments  -->
 <div id="chnage-appointment" role="dialoge" tabindex="-1" class="modal custom-modal">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -151,6 +171,7 @@
         </div>
     </div>
 </div>
+<!-- Confirm excution -->
 <div id="confirm_excution" role="dialoge" tabindex="-1" class="modal custom-modal">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">

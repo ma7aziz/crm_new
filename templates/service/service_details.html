@@ -186,10 +186,10 @@
                         data-feather="pause-circle"></i>  تعليق </button>
 
                     {% endif %}
-                    {% if service.service_type == 'repair' and service.status == 'under_process' and request.user.role == 'repair_supervisor' or request.user.is_superuser  %} 
+                    <!-- {% if service.service_type == 'repair' and service.status == 'under_process' and request.user.role == 'repair_supervisor' or request.user.is_superuser  %} 
                     <button class="btn btn-secondary my-1" data-bs-target="#spare_parts_request" data-bs-toggle="modal">طلب قطع غيار 
                         <i class="fas fa-toolbox"></i>
-                        {% endif %}
+                    {% endif %} -->
                     {% if request.user.is_superuser or request.user.role == 'admin' or request.user.role == 'install_supervisor' or request.user.role == 'repair_supervisor' %}
                     <button class="btn btn-primary my-1" data-bs-toggle="modal" data-bs-target="#change_status"> 
                         <i data-feather="edit"></i>
@@ -315,6 +315,27 @@
 </div>
 
 {% include './modals/service_modals.html' %}
+{% endblock %}
 
 
+
+{% block script %}
+    <script>
+        function reasonSelect() {
+        let el = document.getElementById('hold_reason_select')
+        let selectedOption = el.selectedOptions[0]
+        let sp_input_group = document.getElementById('spare_parts_input_group')
+        let sp_input = document.getElementById('sp_input')
+        if (selectedOption.value == 'spare_parts') {
+            sp_input_group.classList.toggle('hide')  
+            sp_input.setAttribute('required' , '') 
+            
+
+        } else {
+            sp_input_group.classList.add('hide');
+            sp_input.removeAttribute('required') 
+
+        }
+        }
+    </script>
 {% endblock %}

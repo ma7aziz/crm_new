@@ -47,7 +47,7 @@ class ServiceListView(generic.ListView):
             When(status='new', favourite=True, then=True),
             default=False,
             output_field=md.BooleanField(),
-        )).order_by('-fav_first')
+        )).order_by( status_ordering,'-fav_first' )
         return queryset
 
 @method_decorator(allowed_roles(['admin' , 'install_supervisor']) ,name='dispatch' )
@@ -57,7 +57,6 @@ class InstallListView( generic.ListView):
     context_object_name = 'services'
 
     def get_queryset(self):
-
         queryset = models.Service.objects.install().order_by(
             models.status_ordering, '-created_at')
         if self.request.user.role == 'sales':
@@ -67,7 +66,7 @@ class InstallListView( generic.ListView):
             When(status='new', favourite=True, then=True),
             default=False,
             output_field=md.BooleanField(),
-        )).order_by('-fav_first')
+        )).order_by(models.status_ordering , '-fav_first')
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -102,7 +101,7 @@ class RepairListView(generic.ListView):
             When(status='new', favourite=True, then=True),
             default=False,
             output_field=md.BooleanField(),
-        )).order_by('-fav_first')
+        )).order_by(models.status_ordering , '-fav_first')
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -126,7 +125,7 @@ class CreateService(generic.CreateView):
     validation is done in the frontend and back end 
     '''
     model = models.Service
-    fields = ['customer', 'address', 'customer_type', 'favourite',
+    fields = ['customer', 'address', 'customer_type', 'favourite', 'phone_number', 
               'service_type', 'machine_type', 'invoice_number', 'notes']
     success_url = reverse_lazy('service:service_list')
     template_name = 'service/service_create.html'
@@ -236,7 +235,15 @@ class HoldService(generic.View):
                                 hold_reason=hold_reason, file=f, created_by=request.user)
                             file_instance.save()
 
+                    if request.POST['reason'] == 'spare_parts':
+                        sp_request = models.SparePartRequest(
+                        service=service,
+                        requested_parts=request.POST['spare_parts'],
+                        details=request.POST['hold_reason'],
+                        created_by=request.user)
+                        sp_request.save()
                     messages.success(request, 'تم تعليق الطلب !')
+                        
                 else:
                     # unhold service .. change service status , cancel hold reason by user at time
                     hold_reason = models.HoldReason.objects.get(
@@ -373,10 +380,7 @@ class ConfirmSparePartRecieve(generic.View):
 
         return redirect(reverse_lazy('service:service_details', kwargs={'pk':  sp_request.service.id}))
 
-# tables for favourite , late services
-# customer details pages
-# user history
-# service history : created , hold , apointment set ,excution
+
 
 
 # htmx views
@@ -391,16 +395,12 @@ def service_request(request):
     }
     return render(request, template, ctx)
 
-# late orders
-# on hold
-# under_proccess
 
 
 def render_service_data(request):
     '''
     Using HTMX to  return specific filtered service and patial dom elements 
     '''
-    print(request.GET)
     base_temp_name = 'service/partials/htmx/'
     service = request.GET['service']
     data = request.GET['data']
