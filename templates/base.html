@@ -246,13 +246,13 @@
 
                         </li>
                         {% endif %}
-                        <li class="sidebar-item">
+                        <!-- <li class="sidebar-item">
                             <a class="sidebar-link  waves-effect waves-dark" href="{% url 'core:customer_list' %}">
                                 <i class="fas fa-users"></i>
                                 <span class="hide-menu">العملاء </span>
                             </a>
 
-                        </li>
+                        </li> -->
                         {% if request.user.is_superuser%}
                         <li class="sidebar-item">
                             <a class="sidebar-link  waves-effect waves-dark" href="{% url 'users:user_list' %}">
@@ -282,21 +282,25 @@
         <!-- -------------------------------------------------------------- -->
 
         <div class="page-wrapper">
-            <div class="d-flex justify-content-start my-2">
+            <div class="d-flex justify-content-center my-2">
+                {% if request.user.install %}
                 <button 
                 hx-trigger="click"
                 hx-get="/service/service_request?type=install"
                 hx-target="#page-body"
                 hx-swap="innerHTML"
-                class="btn btn-primary btn-rounded mt-3 mx-4 py-2"> <i class="fa fa-wrench"></i> طلب تركيب </button>
+                class="btn btn-primary btn-rounded mt-3 mx-4 py-2 px-3"> <i class="fa fa-wrench"></i> طلب تركيب </button>
+                {% endif %}
+                {% if request.user.repair %}
                 <button 
                 hx-trigger="click"
                 hx-get="/service/service_request?type=repair"
                 hx-target="#page-body"
                 hx-swap="innerHTML"
-                class=" text-light btn btn-success btn-rounded mt-3 mx-4 py-2" >  <i class="fas fa-cogs"></i> طلب صيانة</button>
-                {% if request.user.is_superuser %}
-                 <a href="{% url 'users:create_user' %}" class="text-light btn btn-primary btn-rounded mt-3 mx-4 py-2 text-light"><i class="fa fa-user"></i> مستخد جديد </a>
+                class=" text-light btn btn-success btn-rounded mt-3 mx-4 py-2 px-3" >  <i class="fas fa-cogs"></i> طلب صيانة</button>
+                {% endif %}
+                {% if request.user.is_superuser or request.user.role == 'website_admin' %}
+                 <a href="{% url 'users:create_user' %}" class="text-light btn btn-primary btn-rounded mt-3 mx-4 py-2 px-3 text-light"><i class="fa fa-user"></i> مستخد جديد </a>
                  {% endif %}
 
             </div>

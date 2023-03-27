@@ -1,10 +1,18 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser , UserManager
 from .choices import USER_ROLES
 from django.utils import timezone
 
 # Create your models here.
 
+class CustomUserManager(UserManager):
+    def create_superuser(self, username, email=None, password=None, **extra_fields):
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+        extra_fields.setdefault('role', 'admin')
+        extra_fields.setdefault('install' , True)
+        extra_fields.setdefault('repair' , True)
+        return super().create_superuser(username, email, password, **extra_fields)
 
 class User(AbstractUser):
     name = models.CharField(max_length=125 , blank= True )
@@ -16,11 +24,20 @@ class User(AbstractUser):
     repair = models.BooleanField(default=False)
     
     USERNAME_FIELD = 'username'
-
+    objects = CustomUserManager()
+    
+    def save(self, *args , **kwargs) -> None:
+        if self.role == 'install_supervisor':
+            self.install = True 
+        if self.role == 'repair_supervisor' : 
+            self.repair = True 
+        return super().save(*args, **kwargs)
+        
     def __str__(self):
         return self.username
     
 
+    
     @property
     def remaining_qouta(self):
         '''
