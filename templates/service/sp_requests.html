@@ -1,16 +1,18 @@
 {% extends 'base.html' %}
 {% block title %}
-    طلبات قطع الغيار 
+طلبات قطع الغيار
 {% endblock %}
 {% block content %}
 <div class="row page-titles">
     <div class="col-md-5 col-12 align-self-center">
-        <h3 class="text-themecolor mb-0">الخدمات </h3>
+        <h3 class="text-themecolor mb-0">طلبات قطع الغيار </h3>
     </div>
     <div class="col-md-7 col-12 align-self-center d-none d-md-flex justify-content-end">
         <ol class="breadcrumb mb-0 p-0 bg-transparent">
-            <li class="breadcrumb-item"><a href="">الخدمات</a></li>
-            <li class="breadcrumb-item active d-flex align-items-center">Dashboard</li>
+            <li class="breadcrumb-item active d-flex align-items-center"><a href="">طلبات قطع الغيار </a></li>
+            <li class="breadcrumb-item"><a href="{% url 'service:repair' %}">الصيانة</a></li>
+
+            <li class="breadcrumb-item ">Dashboard</li>
         </ol>
     </div>
 </div>
@@ -30,16 +32,17 @@
             <tbody>
                 <!-- row -->
                 {% for req in sp_requests %}
-                <tr class="search-items text-center {% if service.late %} bg-light-danger {% elif service.favourite and service.late == False and service.status == 'new' %} bg-light-success {% endif %}">
+                <tr
+                    class="search-items text-center {% if service.late %} bg-light-danger {% elif service.favourite and service.late == False and service.status == 'new' %} bg-light-success {% endif %}">
                     <td>{{forloop.counter}} </td>
                     <td>
                         <a href="{% url 'service:service_details' req.service.id %}">{{req.service}}</a>
                     </td>
-    
+
                     <td>
                         {{req.service.company}}
                     </td>
-                  
+
                     <td><a href="{% url 'users:user_details' req.service.created_by.id %}">{{req.created_by}}</a></td>
                     <td>{{req.created_at.date}}</td>
                     <td>
@@ -50,22 +53,23 @@
                         bg-success
                     {% endif %} 
                        ">
-                        {{req.get_status_display}}
+                            {{req.get_status_display}}
                         </span>
-    
+
                     </td>
                     <td>
                         <div class="action-btn">
-                            <a href="" class="text-info edit"><i data-feather="eye"
-                                    class="feather-sm fill-white"></i></a>
+                            <a class="text-info edit" type="button" data-bs-toggle="modal" data-bs-target="#sp_modal"
+                                data-id="{{req.id}}"><i data-feather="eye" class="feather-sm fill-white"></i></a>
                         </div>
                     </td>
                 </tr>
                 {% endfor %}
                 <!-- /.row -->
-    
+
             </tbody>
         </table>
     </div>
 </div>
+{% include 'service/modals/sp_modal.html' %}
 {% endblock %}

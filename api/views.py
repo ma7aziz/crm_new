@@ -1,6 +1,7 @@
-from api.serializers import CustomerSerializer
+from api.serializers import CustomerSerializer , SparePartRequestSerializer
 from rest_framework import generics
 from core.models import Customer
+from service.models import SparePartRequest
 from django.db.models import Q
 
 class CustomerList(generics.ListCreateAPIView):
@@ -15,4 +16,6 @@ class CustomerList(generics.ListCreateAPIView):
         return queryset
     
 class SparePartRequestDetails(generics.RetrieveAPIView):
-    ...
+    serializer_class = SparePartRequestSerializer
+    queryset = SparePartRequest.objects.all()
+    

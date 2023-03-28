@@ -246,6 +246,16 @@
 
                         </li>
                         {% endif %}
+                        {% if request.user.is_superuser or request.user.role == 'repair_supervisor' %}
+                        <li class="sidebar-item">
+                            <a class="sidebar-link  waves-effect waves-dark" href="{% url 'service:spare_part_request' %}">
+                                <!-- <i data-feather="home" class="feather-icon"></i> -->
+                                <i class="fas fa-cog"></i>
+                                <span class="hide-menu">طلبات قطع الغيار </span>
+                            </a>
+
+                        </li>
+                        {% endif%}
                         <li class="sidebar-item">
                             <a class="sidebar-link  waves-effect waves-dark" href="{% url 'core:archive' %}">
                                 <!-- <i data-feather="archive " ></i> -->

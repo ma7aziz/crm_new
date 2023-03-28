@@ -121,9 +121,10 @@
                 <th>اسم العميل </th>
                 <th>الجوال</th>
                 <th>البائع</th>
+                <th>رقم الفاتورة</th>
                 <th>التاريخ</th>
                 <th>حالة الطلب </th>
-                <th>Action</th>
+                
             </thead>
             <tbody>
                 <!-- row -->
@@ -138,6 +139,7 @@
                     <td> {{service.customer}}</td>
                     <td>{{service.phone_number}}</td>
                     <td><a href="{% url 'users:user_details' service.created_by.id %}">{{service.created_by}}</a></td>
+                    <td>{% if service.invoice_number%} {{service.invoice_number }} {% else%} - {% endif %}</td>
                     <td>{{service.created_at.date}}</td>
                     <td>
                         
@@ -161,17 +163,7 @@
                         </span>
                         {% endif %}
                     </td>
-                    <td>
-                        <div class="action-btn">
-                            <a href="" class="text-info edit"><i data-feather="eye"
-                                    class="feather-sm fill-white"></i></a>
-                            {% if perms.sales.delete_customer %}
-                            <a class="text-dark delete ms-2" id="delete_approve_btn" data-url="" data-bs-toggle="modal"
-                                data-bs-target="#delete_approve"><i data-feather="trash-2"
-                                    class="feather-sm fill-white"></i></a>
-                            {% endif %}
-                        </div>
-                    </td>
+                 
                 </tr>
                 {% endfor %}
                 <!-- /.row -->
