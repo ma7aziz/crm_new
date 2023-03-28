@@ -50,17 +50,14 @@ class Service(models.Model):
 
     objects = ServiceManager()
 
-    class Meta:
-        ordering = ['-created_by']
-
     def __str__(self):
         return self.ref_number
 
     def save(self, *args, **kwargs):
         if not self.code:
             while True:
-                code = str(random.randint(1000000, 9999999))
-                if not Service.objects.filter(code=code).exists():
+                code = str(random.randint(1000, 9999))
+                if not Service.objects.filter(code=code , archive = False).exists():
                     self.code = code
                     break
         if not self.ref_number:
@@ -127,6 +124,7 @@ class ExcutionFile(models.Model):
 class HoldReason(models.Model):
     service = models.ForeignKey(Service, on_delete=models.CASCADE)
     reason = models.TextField(max_length=300, blank=True, null=True)
+    details = models.TextField(max_length=300 , blank = True , null = True )
     created_by = models.ForeignKey(
         User, on_delete=models.SET_NULL, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -156,9 +154,10 @@ class SparePartRequest(models.Model):
     created_by = models.ForeignKey(
         User, on_delete=models.SET_NULL, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    recievied_at = models.DateTimeField(blank=True , null=True)
+    recievied_by = models.ForeignKey(User , on_delete=models.SET_NULL , null=True ,blank=True , related_name='sp_recieved')
 
     class Meta:
-
         verbose_name = 'Spare Part Reauest'
         verbose_name_plural = 'Spare Part Reauests'
 

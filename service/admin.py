@@ -9,3 +9,4 @@ class ServiceAdmin(admin.ModelAdmin):
 
 admin.site.register(models.Service , ServiceAdmin)
 admin.site.register(models.File)
+admin.site.register(models.SparePartRequest)

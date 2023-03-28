@@ -8,4 +8,5 @@ urlpatterns = [
     path('customers' , views.CustomerList.as_view() , name='customer_list'),
     path('customers/new' , views.CreateCustomerView.as_view() , name='add_customer'),
     path('customers/<int:pk>/details' , views.CustomerDetails.as_view() , name='customer_details'),
+    path('archive' , views.Archive.as_view() , name='archive')
 ]

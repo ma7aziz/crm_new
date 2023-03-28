@@ -1,4 +1,4 @@
-{% extends 'base.html' %} 
+{% extends 'base.html' %}
 {% block title %} الصيانة {% endblock %}
 {% block content %}
 <div class="row page-titles">
@@ -26,8 +26,7 @@
             </div>
         </div>
     </div>
-    <div class="col-lg-3 col-md-6 pointer"
-    hx-trigger="click" hx-get="/service/get_data?service=repair&data=on_hold"
+    <div class="col-lg-3 col-md-6 pointer" hx-trigger="click" hx-get="/service/get_data?service=repair&data=on_hold"
         hx-target="#displayData" hx-swap="innerHTML">
         <div class="card">
             <div class="card-body">
@@ -40,8 +39,7 @@
             </div>
         </div>
     </div>
-    <div class="col-lg-3 col-md-6 pointer"
-    hx-trigger="click" hx-get="/service/get_data?service=repair&data=new"
+    <div class="col-lg-3 col-md-6 pointer" hx-trigger="click" hx-get="/service/get_data?service=repair&data=new"
         hx-target="#displayData" hx-swap="innerHTML">
         <div class="card">
             <div class="card-body">
@@ -53,51 +51,46 @@
             </div>
         </div>
     </div>
-    <div class="col-lg-3 col-md-6 pointer" hx-trigger="click" hx-get="/service/get_data?service=repair&data=under_process"
-    hx-target="#displayData" hx-swap="innerHTML">
-        <div class="card">
+    <div class="col-lg-3 col-md-6 pointer" hx-trigger="click"
+        hx-get="/service/get_data?service=repair&data=late_services" hx-target="#displayData" hx-swap="innerHTML">
+        <div class="card  border border-danger text-center">
             <div class="card-body">
                 <div class="text-center">
-                    <h6 class="text-muted mt-2 mb-2">طلبات جاري تنفيذها </h6>
-                    <h2>{{under_process_count}}</h2>
+                    <h6 class="text-muted mt-2 mb-2">الطلبات المتأخرة
+                    </h6>
+                    <h2>{{late_count}}</h2>
                 </div>
-
             </div>
         </div>
     </div>
 </div>
 
 <div class="row text-center">
-    <div class="col-6 pointer" hx-trigger="click" hx-get="/service/get_data?service=repair&data=upcoming_appoints"
+    <!-- <div class="col-6 pointer" hx-trigger="click" hx-get="/service/get_data?service=repair&data=upcoming_appoints"
         hx-target="#displayData" hx-swap="innerHTML">
         <div class="card card-body border border-primary">
          مواعيد الصيانة القادمة  <span class="fw-bold">{{upcoming_appointments_count}}  </span> 
         </div>
-    </div>
-    <div class="col-6 pointer" hx-trigger="click" hx-get="/service/get_data?service=repair&data=late_services"
-        hx-target="#displayData" hx-swap="innerHTML">
-        <div class="card card-body border border-danger">
-            الطلبات المتأخرة
-            <span class="fw-bold"> {{late_count}}</span>
-        </div>
-    </div>
-    
+    </div> -->
+
+
 </div>
 <div id="displayData">
 
 </div>
 <div class="card card-body">
-    <div class="table-responsive" >
+    <div class="table-responsive">
         <table class="table search-table " id="serviceTable">
             <thead class="header-item bg-dark text-light text-center">
                 <th>#</th>
                 <th>رقم الطلب </th>
                 <th>اسم العميل </th>
-                <th>الجوال</th>
-                <th>البائع</th>
                 <th>التاريخ</th>
                 <th>حالة الطلب </th>
-                <th>Action</th>
+                <th>رقم الفاتورة </th>
+                <th>نوع العميل </th>
+                <th>البائع</th>
+                <!-- <th></th> -->
             </thead>
             <tbody>
                 <!-- row -->
@@ -107,29 +100,37 @@
                     <td>
                         <a href="{% url 'service:service_details' service.id %}">{{service.ref_number}}</a>
                     </td>
-    
+
 
                     <td>{{service.customer}}</td>
-                    <td>{{service.phone_number}}</td>
-                    <td><a href="{% url 'users:user_details' service.created_by.id %}">{{service.created_by}}</a></td>
+
                     <td>{{service.created_at.date}}</td>
+                    <td>{% if service.invoice_number %} {{service.invoice_number}} {% else %} - {% endif%}</td>
                     <td>
+
+
+                        {% if service.hold %}
+                        <span class="badge round-pill bg-danger">معلق</span>
+                        {% else %}
                         <span class="badge rounded-pill 
-                    {% if service.status  == 'new' %}
-                       bg-warning
-                    {% elif service.status == 'under_process' %}
-                        bg-primary
-                    {% elif  service.status == 'done' or service.status  == 'closed' %}
-                        bg-success
-                    {% endif %} 
-                       ">
-                        {{service.get_status_display}}
+                            {% if service.status  == 'new' %}
+                            bg-warning
+                            {% elif service.status == 'under_process' %}
+                                bg-primary
+                            {% elif  service.status == 'done' or service.status  == 'closed' %}
+                                bg-success
+                            {% endif %} ">
+                            {{service.get_status_display}}
                         </span>
-    
+                        {% endif %}
                     </td>
                     <td>
+                        {{service.get_customer_type_display}}
+                    </td>
+                    <td><a href="{% url 'users:user_details' service.created_by.id %}">{{service.created_by}}</a></td>
+                    <!-- <td>
                         <div class="action-btn">
-                            <a href="" class="text-info edit"><i data-feather="eye"
+                            <a href="{% url 'service:service_details' service.id %}" class="text-info edit"><i data-feather="eye"
                                     class="feather-sm fill-white"></i></a>
                             {% if perms.sales.delete_customer %}
                             <a class="text-dark delete ms-2" id="delete_approve_btn" data-url="" data-bs-toggle="modal"
@@ -137,11 +138,11 @@
                                     class="feather-sm fill-white"></i></a>
                             {% endif %}
                         </div>
-                    </td>
+                    </td> -->
                 </tr>
                 {% endfor %}
                 <!-- /.row -->
-    
+
             </tbody>
         </table>
     </div>
@@ -152,24 +153,24 @@
 
 <script src="https://unpkg.com/htmx.org@1.8.6"></script>
 <script>
-    $(document).ready(function(){
+    $(document).ready(function () {
         $('#serviceTable').DataTable({
-            pageLength : 50,
-            ordering: false ,
+            pageLength: 50,
+            ordering: false,
             scrollY: 350,
             "language": {
                 "paginate": {
                     "next": "الصفحة التالية",
                     "previous": "الصفحة السابقة"
-                            },
-                    "emptyTable":     "لا يوجد بيانات للعرض ",
-                    "info":           "عرض _START_ الي _END_ من _TOTAL_ طلبات",
-                    "infoEmpty":      "Showing 0 to 0 of 0 entries",
-                    "infoFiltered":   "(تم البحث في  _MAX_ طلب)",
-                    "search":         "البحث:",
-                    "zeroRecords":    "لا يوجد بيانات مطابقة للبحث",
-                    "lengthMenu":     "عرض _MENU_ طلب في الصفحة ",
-                
+                },
+                "emptyTable": "لا يوجد بيانات للعرض ",
+                "info": "عرض _START_ الي _END_ من _TOTAL_ طلبات",
+                "infoEmpty": "Showing 0 to 0 of 0 entries",
+                "infoFiltered": "(تم البحث في  _MAX_ طلب)",
+                "search": "البحث:",
+                "zeroRecords": "لا يوجد بيانات مطابقة للبحث",
+                "lengthMenu": "عرض _MENU_ طلب في الصفحة ",
+
             },
             "pagingType": "numbers"
 

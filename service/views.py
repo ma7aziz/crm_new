@@ -10,15 +10,13 @@ from django.db import transaction
 import datetime
 from users.models import User
 from django.shortcuts import get_object_or_404
-from django.db.models import Case, When, Count, Q
+from django.db.models import Case, When, Count, Q 
 from django.db import models as md
 from core.decorators import allowed_roles
 from django.utils.decorators import method_decorator
 from .utils import get_late_count
 
 # Create your views here.
-
-
 @method_decorator(allowed_roles(['admin']), name='dispatch')
 class ServiceListView(generic.ListView):
     model = models.Service
@@ -57,16 +55,16 @@ class InstallListView(generic.ListView):
     context_object_name = 'services'
 
     def get_queryset(self):
-        queryset = models.Service.objects.install().order_by(
-            models.status_ordering, '-created_at')
+        queryset = models.Service.objects.install()
+        queryset = queryset.annotate(
+                fav_new_first=Case(
+                    When(status='new', favourite=True, then=True),
+                    default=False,
+                    output_field=md.BooleanField(),
+                ),
+            ).order_by( '-fav_new_first'  , models.status_ordering  , '-created_at' )
         if self.request.user.role == 'sales':
             queryset = queryset.filter(created_by=self.request.user)
-
-        queryset = queryset.annotate(fav_first=Case(
-            When(status='new', favourite=True, then=True),
-            default=False,
-            output_field=md.BooleanField(),
-        )).order_by(models.status_ordering, '-fav_first')
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -136,6 +134,14 @@ class CreateService(generic.CreateView):
               'service_type', 'machine_type', 'invoice_number', 'notes']
     success_url = reverse_lazy('core:index')
     template_name = 'service/service_create.html'
+
+    def get_success_url(self) :
+        if self.request.POST['service_type'] == 'install': 
+            return reverse_lazy('service:install')
+        elif self.request.POST['service_type'] == 'repair' :
+            return reverse_lazy('service:repair')
+
+
 
     def get_context_data(self, **kwargs):
         kwargs['customer_form'] = CustomerForm
@@ -221,18 +227,18 @@ class UpdateServiceStatus(generic.View):
 class HoldService(generic.View):
     def post(self, request):
         try:
-            print(request.POST)
             with transaction.atomic():
                 service = models.Service.objects.get(
                     pk=request.POST['service'])
                 if not service.hold:
                     hold_reason = models.HoldReason(
                         service=service,
-                        reason=request.POST['hold_reason'],
+                        details=request.POST['hold_reason'],
                         created_by=request.user
                     )
                     hold_reason.save()
                     service.hold = True
+                    service.status = 'under_process'
                     service.save()
                     if self.request.FILES:
                         files = self.request.FILES.getlist('file')
@@ -242,12 +248,15 @@ class HoldService(generic.View):
                             file_instance.save()
 
                     if request.POST['reason'] == 'spare_parts':
+                        hold_reason.reason = 'طلب قطع غيار '
+                        hold_reason.save()
                         sp_request = models.SparePartRequest(
                             service=service,
                             requested_parts=request.POST['spare_parts'],
                             details=request.POST['hold_reason'],
                             created_by=request.user)
                         sp_request.save()
+                    
                     messages.success(request, 'تم تعليق الطلب !')
 
                 else:
@@ -297,7 +306,6 @@ class SetAppointment(generic.View):
     '''
 
     def post(self, request):
-        print(request.POST)
         with transaction.Atomic(using='default', savepoint=True, durable=False):
             try:
                 service = models.Service.objects.get(
@@ -307,13 +315,22 @@ class SetAppointment(generic.View):
                     service=service,
                     defaults={
                         'technician': technician,
-                        'date': request.POST['date'],
+                        'date': datetime.datetime.today(),
                         'notes': request.POST['notes']
                     }
                 )
                 service.status = 'under_process'
                 service.save()
                 messages.success(request, 'تم تحديد الموعد !')
+                if request.POST.getlist('hold_reason'):
+                    hold_reason = models.HoldReason.objects.get(
+                            pk=request.POST['hold_reason'])
+                    hold_reason.canceled_by = request.user
+                    hold_reason.canceled_at = datetime.datetime.now()
+                    hold_reason.save()
+                    service.hold = False
+                    service.save()
+                    messages.success(request, 'تم  اعادة تفعيل الطلب  !')
             except Exception as e:
                 messages.error(request, f'خطأ {e}.. يرجي المحاولة مرة اخري ')
             return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
@@ -359,10 +376,13 @@ class ConfirmExcution(generic.View):
 
 class SparePartRequest(generic.View):
     def get(self, request, *args, **kwargs):
-        ...
+        template_name = 'service/sp_requests.html'
+        ctx = {
+            'sp_requests' : models.SparePartRequest.objects.all().order_by('-created_at')
+        }
+        return render(request , template_name , ctx)
 
     def post(self, request):
-        print(request.POST)
         service = models.Service.objects.get(pk=request.POST['service'])
         sp_request = models.SparePartRequest(
             service=service,
@@ -375,16 +395,20 @@ class SparePartRequest(generic.View):
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
+
 class ConfirmSparePartRecieve(generic.View):
     def post(self, request):
         sp_request = models.SparePartRequest.objects.get(
             pk=request.POST['sp_request'])
         sp_request.status = 'recieved'
+        sp_request.recievied_by = request.user
+        sp_request.recievied_at = datetime.datetime.now()
         sp_request.save()
 
         messages.success(request, 'تم تأكيد استلام قطع الغيار ')
 
         return redirect(reverse_lazy('service:service_details', kwargs={'pk':  sp_request.service.id}))
+
 
 
 # htmx views

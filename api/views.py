@@ -13,3 +13,6 @@ class CustomerList(generics.ListCreateAPIView):
         if search_term is not None:
             queryset = queryset.filter(Q(name__icontains=search_term) | Q(phone_number__icontains=search_term))
         return queryset
+    
+class SparePartRequestDetails(generics.RetrieveAPIView):
+    ...

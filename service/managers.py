@@ -9,7 +9,7 @@ class ServiceManager(models.Manager):
         return self.all().filter(service_type='repair').order_by('-created_at')
 
     def install(self):
-        return self.all().filter(service_type='install').order_by('-created_at')
+        return self.all().filter(service_type='install')
 
     def cash(self):
         return self.filter(customer_type='cash')

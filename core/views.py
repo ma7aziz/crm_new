@@ -129,8 +129,24 @@ class CustomerDetails(generic.DetailView):
     context_object_name = 'customer'
     template_name = 'core/customer_details.html'
 
-
-# technician
-
-
-# company
+class Archive(generic.ListView):
+    
+    '''
+    List all aarchived services 
+    service is archived after 30 days if status == closed
+    '''
+    template_name = 'service/archive.html'
+    model = Service
+    context_object_name = 'services'
+    
+    def get_queryset(self):
+        if self.request.user.is_superuser :
+            qs = Service.objects.archive() 
+        elif self.request.user.role == 'install_supervisor' : 
+            qs =Service.objects.archive().filter(service_type = 'install')
+        elif self.request.user.role == 'repair_supervisor' : 
+            qs =Service.objects.archive().filter(service_type = 'repair')
+        else :
+            qs = self.request.user.service_set.filter(archive = True )
+        print(qs.explain())
+        return qs
