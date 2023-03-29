@@ -8,5 +8,7 @@ urlpatterns = [
     path('customers' , views.CustomerList.as_view() , name='customer_list'),
     path('customers/new' , views.CreateCustomerView.as_view() , name='add_customer'),
     path('customers/<int:pk>/details' , views.CustomerDetails.as_view() , name='customer_details'),
-    path('archive' , views.Archive.as_view() , name='archive')
+    path('archive' , views.Archive.as_view() , name='archive'),
+    path('index_data' , views.index_data , name='index_data'),
+    path('empty_htmx' , views.empty_htmx,name='empty_htmx' )
 ]

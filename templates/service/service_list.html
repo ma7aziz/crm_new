@@ -54,7 +54,13 @@
                     <td>{{service.phone_number}}</td>
                     <td><a href="{% url 'users:user_details' service.created_by.id %}">{{service.created_by}}</a></td>
                     <td>
+                        <a href="{% url 'service:service_details' service.id %}">
+
+                        {% if service.hold %}
+                        <span class="badge round-pill bg-danger">معلق</span>
+                        {% else %}
                         <span class="badge rounded-pill 
+
                     {% if service.status  == 'new' %}
                        bg-warning
                     {% elif service.status == 'under_process' %}
@@ -62,10 +68,13 @@
                     {% elif  service.status == 'done' or service.status  == 'closed' %}
                         bg-success
                     {% endif %} 
+   
                        ">
-                        {{service.get_status_display}}
+                           
+                       {{service.get_status_display}}
                         </span>
-    
+                        {% endif %}
+                        </a>
                     </td>
                     <td>
                         <div class="action-btn">

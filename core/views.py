@@ -28,7 +28,7 @@ class Index(generic.View):
                 new_count=Count('id', filter=Q(status='new')),
                 under_process_count=Count(
                     'id', filter=Q(status='under_process')),
-                on_hold_count=Count('id', filter=Q(status='hold'))
+                on_hold_count=Count('id', filter=Q(hold=True))
             )
             
             new_requests = Service.objects.all().filter(status = 'new')
@@ -150,3 +150,34 @@ class Archive(generic.ListView):
             qs = self.request.user.service_set.filter(archive = True )
         print(qs.explain())
         return qs
+
+# dashboard htmx 
+def index_data(request):
+    '''
+    Htmx tables in index page 
+    repair == new , current 
+    install == new , current 
+    hold  
+    '''
+    service_type = request.GET['service']
+    base_temp_name = 'core/partials/htmx/'
+    if service_type == 'install' :
+        template = base_temp_name + 'install.html'
+        ctx = {
+            'services' : Service.objects.install().filter(Q(status = 'new') | Q(status = 'under_process'))
+        }
+    elif service_type == 'repair':
+        template = base_temp_name + 'repair.html'
+        ctx = {
+            'services' : Service.objects.repair().filter(Q(status = 'new') | Q(status = 'under_process'))
+        }
+    elif service_type == 'hold':
+        template = base_temp_name + 'hold.html'
+        ctx = {
+            'services' : Service.objects.repair().filter(hold=True)
+        }
+        
+    return render(request , template , ctx )
+
+def empty_htmx(request):
+    return render(request , 'core/empty_htmx.html')

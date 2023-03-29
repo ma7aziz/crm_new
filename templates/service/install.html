@@ -15,7 +15,12 @@
 </div>
 
 <div class="row">
-    <div class="col-lg-3 col-md-6">
+    <div class="col-lg-3 col-md-6 pointer"
+    hx-trigger="click" 
+    hx-swap="innerHTML"
+    hx-target="#displayData"
+    hx-get="/empty_htmx">
+
         <div class="card">
             <div class="card-body">
 
@@ -78,37 +83,7 @@
     </div> -->
 </div>
 
-<div class="row text-center">
-    <!-- <div class="col-3 pointer" hx-trigger="click" hx-get="/service/get_data?service=install&data=upcoming_appoints"
-        hx-target="#displayData" hx-swap="innerHTML">
-        <div class="card card-body border border-primary">
-            مواعيد التركيب القادمة <span class="fw-bold">{{upcoming_appointments_count}} </span>
-        </div>
-    </div> -->
-    <!-- <div class="col-3 pointer" hx-trigger="click" hx-get="/service/get_data?service=install&data=late_services"
-        hx-target="#displayData" hx-swap="innerHTML">
-        <div class="card card-body border border-danger">
-            الطلبات المتأخرة
-            <span class="fw-bold"> {{late_count}}</span>
-        </div>
-    </div> -->
-    <!-- <div class="col-3 pointer" hx-trigger="click" hx-get="/service/get_data?service=install&data=new_favourite"
-        hx-target="#displayData" hx-swap="innerHTML">
-        <div class="card card-body border border-success">
 
-            المفضلات الجديدة
-            <span class="fw-bold"> {{new_favs}}</span>
-        </div>
-    </div>
-    <div class="col-3 pointer" hx-trigger="click" hx-get="/service/get_data?service=install&data=processing_favourite"
-        hx-target="#displayData" hx-swap="innerHTML">
-        <div class="card card-body border border-success">
-
-            المفضلات الجاري تنفيذها
-            <span class="fw-bold"> {{current_favs}}</span>
-        </div>
-    </div> -->
-</div>
 <div id="displayData">
 
 </div>
@@ -142,7 +117,7 @@
                     <td>{% if service.invoice_number%} {{service.invoice_number }} {% else%} - {% endif %}</td>
                     <td>{{service.created_at.date}}</td>
                     <td>
-                        
+                        <a href="{% url 'service:service_details' service.id %}">
 
                         {% if service.hold %}
                         <span class="badge round-pill bg-danger">معلق</span>
@@ -162,6 +137,7 @@
                        {{service.get_status_display}}
                         </span>
                         {% endif %}
+                        </a>
                     </td>
                  
                 </tr>

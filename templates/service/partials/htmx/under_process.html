@@ -11,6 +11,7 @@
                 <th>الجوال</th>
                 <th>البائع</th>
                 <th>التاريخ</th>
+                <th>حالة الطلب </th>
          
             </thead>
             <tbody>
@@ -27,7 +28,29 @@
                     <td>{{service.phone_number}}</td>
                     <td><a href="{% url 'users:user_details' service.created_by.id %}">{{service.created_by}}</a></td>
                     <td>{{service.created_at.date}}</td>
-                    
+                    <td>
+                        <a href="{% url 'service:service_details' service.id %}">
+
+                        {% if service.hold %}
+                        <span class="badge round-pill bg-danger">معلق</span>
+                        {% else %}
+                        <span class="badge rounded-pill 
+
+                    {% if service.status  == 'new' %}
+                       bg-warning
+                    {% elif service.status == 'under_process' %}
+                        bg-primary
+                    {% elif  service.status == 'done' or service.status  == 'closed' %}
+                        bg-success
+                    {% endif %} 
+   
+                       ">
+                           
+                       {{service.get_status_display}}
+                        </span>
+                        {% endif %}
+                        </a>
+                    </td>
                 </tr>
                 {% endfor %}
                 <!-- /.row -->

@@ -14,7 +14,11 @@
     </div>
 </div>
 <div class="row">
-    <div class="col-lg-3 col-md-6">
+    <div class="col-lg-3 col-md-6 pointer"
+    hx-trigger="click" 
+    hx-swap="innerHTML"
+    hx-target="#displayData"
+    hx-get="/empty_htmx">
         <div class="card">
             <div class="card-body">
 
@@ -65,16 +69,7 @@
     </div>
 </div>
 
-<div class="row text-center">
-    <!-- <div class="col-6 pointer" hx-trigger="click" hx-get="/service/get_data?service=repair&data=upcoming_appoints"
-        hx-target="#displayData" hx-swap="innerHTML">
-        <div class="card card-body border border-primary">
-         مواعيد الصيانة القادمة  <span class="fw-bold">{{upcoming_appointments_count}}  </span> 
-        </div>
-    </div> -->
 
-
-</div>
 <div id="displayData">
 
 </div>
@@ -85,9 +80,10 @@
                 <th>#</th>
                 <th>رقم الطلب </th>
                 <th>اسم العميل </th>
+                <th>الجوال</th>
                 <th>التاريخ</th>
-                <th>حالة الطلب </th>
                 <th>رقم الفاتورة </th>
+                <th>حالة الطلب </th>
                 <th>نوع العميل </th>
                 <th>البائع</th>
                 <!-- <th></th> -->
@@ -103,42 +99,39 @@
 
 
                     <td>{{service.customer}}</td>
-
+                    <td>{{service.phone_number}}</td>
                     <td>{{service.created_at.date}}</td>
                     <td>{% if service.invoice_number %} {{service.invoice_number}} {% else %} - {% endif%}</td>
                     <td>
 
 
-                        {% if service.hold %}
-                        <span class="badge round-pill bg-danger">معلق</span>
-                        {% else %}
-                        <span class="badge rounded-pill 
-                            {% if service.status  == 'new' %}
-                            bg-warning
-                            {% elif service.status == 'under_process' %}
-                                bg-primary
-                            {% elif  service.status == 'done' or service.status  == 'closed' %}
-                                bg-success
-                            {% endif %} ">
-                            {{service.get_status_display}}
-                        </span>
-                        {% endif %}
+                        <a href="{% url 'service:service_details' service.id %}">
+
+                            {% if service.hold %}
+                            <span class="badge round-pill bg-danger">معلق</span>
+                            {% else %}
+                            <span class="badge rounded-pill 
+    
+                        {% if service.status  == 'new' %}
+                           bg-warning
+                        {% elif service.status == 'under_process' %}
+                            bg-primary
+                        {% elif  service.status == 'done' or service.status  == 'closed' %}
+                            bg-success
+                        {% endif %} 
+       
+                           ">
+                               
+                           {{service.get_status_display}}
+                            </span>
+                            {% endif %}
+                            </a>
                     </td>
                     <td>
                         {{service.get_customer_type_display}}
                     </td>
                     <td><a href="{% url 'users:user_details' service.created_by.id %}">{{service.created_by}}</a></td>
-                    <!-- <td>
-                        <div class="action-btn">
-                            <a href="{% url 'service:service_details' service.id %}" class="text-info edit"><i data-feather="eye"
-                                    class="feather-sm fill-white"></i></a>
-                            {% if perms.sales.delete_customer %}
-                            <a class="text-dark delete ms-2" id="delete_approve_btn" data-url="" data-bs-toggle="modal"
-                                data-bs-target="#delete_approve"><i data-feather="trash-2"
-                                    class="feather-sm fill-white"></i></a>
-                            {% endif %}
-                        </div>
-                    </td> -->
+          
                 </tr>
                 {% endfor %}
                 <!-- /.row -->
