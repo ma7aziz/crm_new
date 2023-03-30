@@ -30,7 +30,6 @@ class Index(generic.View):
                     'id', filter=Q(status='under_process')),
                 on_hold_count=Count('id', filter=Q(hold=True))
             )
-            
             new_requests = Service.objects.all().filter(status = 'new')
             template = 'core/index.html'
             ctx = {
