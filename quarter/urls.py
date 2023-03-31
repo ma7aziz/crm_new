@@ -10,4 +10,6 @@ urlpatterns = [
     path('project/<int:pk>/delete' , views.DeleteProject.as_view() , name='delete_project'),
     path('project/start_negotiation' , views.StartNegotiation.as_view() , name='start_negotiation'),
     path('project/negotiation_status' , views.NegotiationStatus.as_view() , name='negotiation_status'),
+    path('project/attach_files' , views.AttachExcutionFiles.as_view() , name='attach_files'),
+    path('project/confirm_project' , views.ConfirmProject.as_view() , name='confirm_project'),
 ]

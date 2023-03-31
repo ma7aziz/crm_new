@@ -23,33 +23,50 @@
                 <li class="list-group-item"> الاسم : <span class="text-primary">{{project.name}}</span></li>
                 <li class="list-group-item"> الجوال :<span class="text-primary">{{project.phone_number}}</span></li>
                 <li class="list-group-item"> الموقع : <span class="text-primary">{{project.address}}</span></li>
-                <li class="list-group-item"> حالة الطلب : <span class="text-primary">{{project.get_status_display}}</span></li>
-                <li class="list-group-item"> البائع : <span class="text-primary"><a href="{% url 'users:user_details' project.created_by.id %}">{{project.created_by}}</a></span></li>
+                <li class="list-group-item"> حالة الطلب : <span
+                        class="text-primary">{{project.get_status_display}}</span></li>
+                <li class="list-group-item"> البائع : <span class="text-primary"><a
+                            href="{% url 'users:user_details' project.created_by.id %}">{{project.created_by}}</a></span>
+                </li>
                 <li class="list-group-item">وقت الطلب : <span class="text-primary">{{project.created_at}}</span></li>
                 <li class="list-group-item">اخر تحديث : <span class="text-primary">{{project.last_update}}</span></li>
             </ul>
+            
+        </div>
+
+        <div class="card card-body">
+            {% if excution_files %}
+            <h4>ملفات المشروع</h4>
+            <div class="d-flex justify-content-around">
+                {% for file in excution_files.files.all %}
+                <a href="{{file.file.url}}">ملف {{forloop.counter}}</a>
+            {% endfor %}
+            </div>
+
+            {% endif %}
         </div>
     </div>
     <div class="col-6">
         <div class="card card-body">
             <!-- edit -->
-            <button class="btn btn-warning pointer" data-bs-target="#edit_project"
-            data-bs-toggle="modal">تعديل بيانات المشروع</button>
+            <button class="btn btn-warning pointer" data-bs-target="#edit_project" data-bs-toggle="modal">تعديل بيانات
+                المشروع</button>
             <!-- delete -->
-            <button class="btn btn-danger my-2" data-bs-target="#project_delete_approve" data-bs-toggle="modal"> حذف المشروع </button>
+            <button class="btn btn-danger my-2" data-bs-target="#project_delete_approve" data-bs-toggle="modal"> حذف
+                المشروع </button>
             {% if project.status ==  'new' %}
             <form action="{% url 'quarter:start_negotiation' %}" method="post">
                 {% csrf_token %}
                 <input type="hidden" name="project" value="{{project.id}}">
-                <button class="btn btn-primary my-2 w-100"  type="submit">بداية المفاوضات  </button>
+                <button class="btn btn-primary my-2 w-100" type="submit">بداية المفاوضات </button>
             </form>
             {% endif %}
-            
+
         </div>
-        {% if project.status == 'negotiation'%}
+        {% if project.status == 'negotiation' %}
         <div class="card card-body">
             <h4>جاري التفاوض</h4>
-            <p> بدء التفاوض  : {{project.negotiation_set.last.created_at}}</p>
+            <p> بدء التفاوض : {{project.negotiation_set.last.created_at}}</p>
             <p>بواسطة : {{project.negotiation_set.last.created_by}} </p>
             <div class="">
                 <form action="{% url 'quarter:negotiation_status' %}" method="post">
@@ -67,6 +84,62 @@
                     <button class="btn btn-danger  w-100">رفض</button>
                 </form>
             </div>
+        </div>
+        {% endif %}
+        {% if project.status == 'waiting_designs' %}
+        <div class="card card-body">
+            <h4>ارفاق التصاميم و العقود </h4>
+            <form action="{% url 'quarter:attach_files' %}" method="post" novalidate class="needs-validation"
+                enctype="multipart/form-data">
+                <input type="hidden" name="project" value="{{project.id}}">
+                {% csrf_token %}
+                <div>
+                    <label for="">ملفات المشروع </label>
+                    <input type="file" class="form-control" name="file" multiple required />
+                    <p class="invalid-feedback">
+                        يرجي ارفاق الملفات
+                    </p>
+                </div>
+                <div>
+                    <label for="">ملاحظات</label>
+                    <textarea name="notes" class="form-control" id="" cols="30" rows="2"></textarea>
+                </div>
+                <div class=" d-flex justify-content-end my-2">
+                    <button type="submit" class="btn btn-success">
+                        حفظ
+                    </button>
+                </div>
+
+            </form>
+        </div>
+        {% endif %}
+        {% if project.status == 'waiting_approval' %}
+            <div class="card card-body">
+            <h4>ملفات المشروع</h4>
+            <div class="d-flex justify-content-around">
+                {% for file in excution_files.files.all %}
+                <a href="{{file.file.url}}">ملف {{forloop.counter}}</a>
+            {% endfor %}
+            </div>
+
+            <div class="my-2">
+                <form action="{% url 'quarter:confirm_project' %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="project" value="{{project.id}}">
+                    <button class="btn btn-success w-100">تأكيد توقيع العقد </button>
+                </form>
+                
+            </div>
+            
+        </div>
+        {% endif %}
+        {% if project.status == 'under_process' %}
+        <div class="card card-body">
+            <form action="{% url 'quarter:confirm_project' %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="project" value="{{project.id}}">
+                <button class="btn btn-success w-100" type="submit" > تأكيد التنفيذ </button>
+            </form>
         </div>
         {% endif %}
     </div>

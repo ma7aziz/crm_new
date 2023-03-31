@@ -46,13 +46,13 @@
                         {% else %}
                         <span class="badge rounded-pill 
 
-                    {% if project.status  == 'new' %}
-                       bg-warning
-                    {% elif project.status == 'under_process' %}
-                        bg-primary
-                    {% elif  project.status == 'done' or project.status  == 'closed' %}
+                        {% if project.status  == 'new' %}
+                        bg-warning
+                        {% elif  project.status == 'done' or project.status  == 'closed' %}
                         bg-success
-                    {% endif %} 
+                        {% else %}
+                            bg-primary
+                        {% endif %} 
    
                        ">
                            
@@ -71,3 +71,30 @@
     </div>
 </div>
 {% endblock %}
+{% block script %}
+<script>
+
+$(document).ready(function(){
+    $('#serviceTable').DataTable({
+        pageLength : 25,
+        ordering: false ,
+        "language": {
+            "paginate": {
+                "next": "الصفحة التالية",
+                "previous": "الصفحة السابقة"
+                        },
+                "emptyTable":     "لا يوجد بيانات للعرض ",
+                "info":           "عرض _START_ الي _END_ من _TOTAL_ مشروع",
+                "infoEmpty":      "Showing 0 to 0 of 0 entries",
+                "infoFiltered":   "(تم البحث في  _MAX_ مشروع)",
+                "search":         "البحث:",
+                "zeroRecords":    "لا يوجد بيانات مطابقة للبحث",
+                "lengthMenu":     "عرض _MENU_ مشروع في الصفحة ",
+            
+        },
+        "pagingType": "numbers"
+
+    })
+})
+</script>
+{% endblock script %}

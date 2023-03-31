@@ -43,3 +43,19 @@ class Negotiation(models.Model):
     status = models.CharField(max_length=10 , choices=NEGOTIATION_STATUS_CHOICES , default='current')
     
     
+class ProjectFiles(models.Model):
+    project = models.ForeignKey(QuarterProject , on_delete=models.CASCADE)
+    created_by = models.ForeignKey(User , on_delete=models.SET_NULL , null = True )
+    created_at = models.DateTimeField(auto_now_add=True)
+    files = models.ManyToManyField('File')
+    
+    class Meta:
+        verbose_name_plural = 'Project Files'
+        
+    def __str__(self):
+        return f'{self.project} Excution files . '
+
+
+class File(models.Model):
+    file = models.FileField(upload_to='quarter/files')
+    
