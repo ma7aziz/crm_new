@@ -257,6 +257,14 @@
                         </li>
                         {% endif%}
                         <li class="sidebar-item">
+                            <a class="sidebar-link  waves-effect waves-dark" href="{% url 'quarter:project_list' %}">
+                                <!-- <i data-feather="archive " ></i> -->
+                                Q
+                                <span class="hide-menu">كوارتر </span>
+                            </a>
+
+                        </li>
+                        <li class="sidebar-item">
                             <a class="sidebar-link  waves-effect waves-dark" href="{% url 'core:archive' %}">
                                 <!-- <i data-feather="archive " ></i> -->
                                 <i class=" fas fa-archive"></i>
@@ -312,9 +320,10 @@
                 class=" text-light btn btn-success btn-rounded mt-3 mx-4 py-2 px-3" >  <i class="fas fa-cogs"></i> طلب صيانة</button>
                 {% endif %}
                 {% if request.user.is_superuser or request.user.role == 'website_admin' %}
-                 <a href="{% url 'users:create_user' %}" class="text-light btn btn-primary btn-rounded mt-3 mx-4 py-2 px-3 text-light"><i class="fa fa-user"></i> مستخد جديد </a>
+                 <a href="{% url 'users:create_user' %}" class="text-light btn btn-primary btn-rounded mt-3 mx-4 py-2 px-3 text-light"><i class="fa fa-user"></i> مستخدم جديد </a>
                  {% endif %}
-
+                 <button data-bs-target="#quarter_request" data-bs-toggle="modal" class="text-light btn btn-primary btn-rounded mt-3 mx-4 py-2 px-3 text-light"><i class="fa fa-user"></i> مشروع جديد </a>
+    
             </div>
             <!-- -------------------------------------------------------------- -->
             <!-- Container fluid  -->
@@ -348,6 +357,7 @@
                 {% endblock %}
                 {% include 'service/modals/repair_modal.html'%}
                 {% include 'service/modals/install_modal.html'%}
+                {% include 'quarter/modals/create_project_modal.html'%}
             </div>
             <!-- -------------------------------------------------------------- -->
             <!-- End Container fluid  -->
