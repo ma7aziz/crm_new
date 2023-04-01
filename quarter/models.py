@@ -36,6 +36,9 @@ class QuarterProject(models.Model):
     def __str__(self) :
         return self.ref_number
     
+    class Meta:
+        ordering = ['-created_at']
+    
 class Negotiation(models.Model):
     project = models.ForeignKey(QuarterProject , on_delete=models.CASCADE)
     created_by = models.ForeignKey(User ,on_delete=models.SET_NULL , null = True)

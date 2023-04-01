@@ -12,4 +12,5 @@ urlpatterns = [
     path('project/negotiation_status' , views.NegotiationStatus.as_view() , name='negotiation_status'),
     path('project/attach_files' , views.AttachExcutionFiles.as_view() , name='attach_files'),
     path('project/confirm_project' , views.ConfirmProject.as_view() , name='confirm_project'),
+    path('data' , views.get_data, name='get_data')
 ]

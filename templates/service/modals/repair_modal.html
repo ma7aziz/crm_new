@@ -56,7 +56,7 @@
                     </div>
                     <div class="col-6 my-2" id="company">
                         <label class="text-primary" for="">الشركة</label>
-                        <select name="company" id="" class="form-control">
+                        <select name="company" id="company_select" class="form-control">
                             <option value="" selected disabled>اختر الشركة صاحبة الضمان</option>
                             {% for company in companies %}
                             <option value="{{company.id}}">{{company}}</option>
@@ -64,7 +64,7 @@
                         </select>
         
                         <div class="invalid-feedback">
-                            <p>رقم الفاتورة مطلوب لعميل الضمان !! </p>
+                            <p>يجب اختيار الشركة !! </p>
                         </div>
                     </div>
         
@@ -104,6 +104,7 @@
         let customerType = document.querySelector('#customer_type').selectedOptions[0]
         if (customerType.value == 'warranty') {
             document.querySelector('input[name="invoice_number"]').required = true
+            document.querySelector('#company_select').required = true
             document.querySelector('#invoiceNo').style.display = 'block'
             document.querySelector('#company').style.display = 'block'
 

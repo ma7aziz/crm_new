@@ -14,6 +14,40 @@
         </ol>
     </div>
 </div>
+<div class="row">
+    <div class="col-6 pointer"
+    hx-trigger="click" 
+    hx-swap="innerHTML"
+    hx-target="#serviceTable"
+    hx-get="/quarter/data?status=all">
+        <div class="card">
+            <div class="card-body">
+
+                <div class="text-center">
+                    <h6 class="text-muted mt-2 mb-2">اجمالي المشاريع</h6>
+                    <h2>{{projects.count}}</h2>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="col-6 pointer" hx-trigger="click" 
+    hx-target="#serviceTable"
+    hx-get="/quarter/data?status=current"
+    hx-swap="innerHTML">
+        <div class="card">
+            <div class="card-body">
+
+                <div class="text-center">
+                    <h6 class="text-muted mt-2 mb-2">مشاريع جاري تنفيذها </h6>
+                    <h2>{{under_process.count}}</h2>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
 
 <div class="card card-body">
     <div class="table-responsive">
@@ -72,8 +106,8 @@
 </div>
 {% endblock %}
 {% block script %}
+<script src="https://unpkg.com/htmx.org@1.8.6"></script>
 <script>
-
 $(document).ready(function(){
     $('#serviceTable').DataTable({
         pageLength : 25,

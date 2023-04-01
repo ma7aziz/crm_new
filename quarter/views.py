@@ -5,6 +5,8 @@ from . import models
 from .forms import QuarterProjectForm
 from django.contrib import messages
 from django.urls import reverse_lazy
+from django.db.models import Q
+
 # Create your views here.
 
 # list view
@@ -14,6 +16,9 @@ class ProjectList(generic.ListView):
     model = models.QuarterProject
     template_name = 'quarter/project_list.html'
     context_object_name = 'projects'
+    def get_context_data(self, **kwargs):
+        kwargs['under_process'] = models.QuarterProject.objects.exclude(Q(status = 'new' )|Q(status = 'canceled') |Q(status = 'done'))
+        return super().get_context_data(**kwargs)
 
 
 class CreateProject(generic.CreateView):
@@ -146,3 +151,15 @@ class ConfirmProject(generic.View):
 
 
 # update status
+
+#htmx views 
+def get_data(request):
+    status = request.GET['status']
+    if status == 'all':
+        data = models.QuarterProject.objects.all()
+    elif status == 'current':
+        data = models.QuarterProject.objects.exclude(Q(status = 'new' )|Q(status = 'canceled') |Q(status = 'done'))
+        
+    template = 'quarter/partials/htmx/table.html'
+    
+    return render(request , template , {'projects':data})

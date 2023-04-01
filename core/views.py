@@ -5,9 +5,8 @@ from django.contrib import messages
 from . import models
 from .forms import CustomerForm
 from .filters import CustomerFilter
-from service.models import Service , SparePartRequest, Appointment
+from service.models import Service, SparePartRequest, Appointment
 from django.db.models import Count, Q
-
 
 
 class Index(generic.View):
@@ -30,7 +29,7 @@ class Index(generic.View):
                     'id', filter=Q(status='under_process')),
                 on_hold_count=Count('id', filter=Q(hold=True))
             )
-            new_requests = Service.objects.all().filter(status = 'new')
+            new_requests = Service.objects.all().filter(status='new')
             template = 'core/index.html'
             ctx = {
                 'total_count': counts['total_counts'],
@@ -41,8 +40,8 @@ class Index(generic.View):
                 'new_count': counts['new_count'],
                 'under_process_count': counts['under_process_count'],
                 'on_hold_count': counts['on_hold_count'],
-                'new_requests' : new_requests
-                
+                'new_requests': new_requests
+
             }
         elif request.user.role == 'sales':
             template = 'core/sales_index.html'
@@ -76,19 +75,21 @@ class Index(generic.View):
             ctx = {
                 'services': Service.objects.filter(created_by=request.user),
                 'warranty': Service.objects.repair().filter(company=request.user),
-                'sp_requests': SparePartRequest.objects.all().filter(service__company = request.user )
+                'sp_requests': SparePartRequest.objects.all().filter(service__company=request.user)
             }
         elif request.user.role == 'technician':
             template = 'core/tech_index.html'
             ctx = {
-                'upcoming_appointments' : Appointment.objects.upcoming().filter(technician=request.user) , 
-                'past_appointmanets' :Appointment.objects.past().filter(technician = request.user ) , 
-                'services'  :Service.objects.all().filter(created_by = request.user )
+                'upcoming_appointments': Appointment.objects.upcoming().filter(technician=request.user),
+                'past_appointmanets': Appointment.objects.past().filter(technician=request.user),
+                'services': Service.objects.all().filter(created_by=request.user)
             }
         elif request.user.role == 'repair_supervisor':
-            return (redirect(reverse_lazy('service:repair')))
+            return redirect(reverse_lazy('service:repair'))
         elif request.user.role == 'install_supervisor':
-            return (redirect(reverse_lazy('service:install')))
+            return redirect(reverse_lazy('service:install'))
+        elif request.user.role in ['quarter_supervisor', 'accountant', 'quarter_sales', 'egypt_office']:
+            return redirect(reverse_lazy('quarter:project_list'))
         return render(request, template, ctx)
 
 
@@ -128,8 +129,9 @@ class CustomerDetails(generic.DetailView):
     context_object_name = 'customer'
     template_name = 'core/customer_details.html'
 
+
 class Archive(generic.ListView):
-    
+
     '''
     List all aarchived services 
     service is archived after 30 days if status == closed
@@ -137,20 +139,22 @@ class Archive(generic.ListView):
     template_name = 'service/archive.html'
     model = Service
     context_object_name = 'services'
-    
+
     def get_queryset(self):
-        if self.request.user.is_superuser :
-            qs = Service.objects.archive() 
-        elif self.request.user.role == 'install_supervisor' : 
-            qs =Service.objects.archive().filter(service_type = 'install')
-        elif self.request.user.role == 'repair_supervisor' : 
-            qs =Service.objects.archive().filter(service_type = 'repair')
-        else :
-            qs = self.request.user.service_set.filter(archive = True )
+        if self.request.user.is_superuser:
+            qs = Service.objects.archive()
+        elif self.request.user.role == 'install_supervisor':
+            qs = Service.objects.archive().filter(service_type='install')
+        elif self.request.user.role == 'repair_supervisor':
+            qs = Service.objects.archive().filter(service_type='repair')
+        else:
+            qs = self.request.user.service_set.filter(archive=True)
         print(qs.explain())
         return qs
 
-# dashboard htmx 
+# dashboard htmx
+
+
 def index_data(request):
     '''
     Htmx tables in index page 
@@ -160,23 +164,24 @@ def index_data(request):
     '''
     service_type = request.GET['service']
     base_temp_name = 'core/partials/htmx/'
-    if service_type == 'install' :
+    if service_type == 'install':
         template = base_temp_name + 'install.html'
         ctx = {
-            'services' : Service.objects.install().filter(Q(status = 'new') | Q(status = 'under_process'))
+            'services': Service.objects.install().filter(Q(status='new') | Q(status='under_process'))
         }
     elif service_type == 'repair':
         template = base_temp_name + 'repair.html'
         ctx = {
-            'services' : Service.objects.repair().filter(Q(status = 'new') | Q(status = 'under_process'))
+            'services': Service.objects.repair().filter(Q(status='new') | Q(status='under_process'))
         }
     elif service_type == 'hold':
         template = base_temp_name + 'hold.html'
         ctx = {
-            'services' : Service.objects.repair().filter(hold=True)
+            'services': Service.objects.repair().filter(hold=True)
         }
-        
-    return render(request , template , ctx )
+
+    return render(request, template, ctx)
+
 
 def empty_htmx(request):
-    return render(request , 'core/empty_htmx.html')
+    return render(request, 'core/empty_htmx.html')

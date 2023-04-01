@@ -22,6 +22,7 @@ class User(AbstractUser):
     favourite_qouta = models.PositiveIntegerField(default=3)
     install = models.BooleanField(default=False)
     repair = models.BooleanField(default=False)
+    quarter = models.BooleanField(default=False)
     
     USERNAME_FIELD = 'username'
     objects = CustomUserManager()
@@ -31,6 +32,8 @@ class User(AbstractUser):
             self.install = True 
         if self.role == 'repair_supervisor' : 
             self.repair = True 
+        if self.role == 'quarter_supervisor' :
+            self.quarter = True 
         return super().save(*args, **kwargs)
         
     def __str__(self):
