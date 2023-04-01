@@ -19,7 +19,7 @@
 
 <div class="card card-body">
     <div class="table-responsive">
-        <table class="table search-table " id="serviceTable">
+        <table class="table search-table " id="SP_Table">
             <thead class="header-item bg-dark text-light text-center">
                 <th>#</th>
                 <th>رقم الطلب</th>
@@ -73,3 +73,31 @@
 </div>
 {% include 'service/modals/sp_modal.html' %}
 {% endblock %}
+
+{% block script %}
+<script>
+    $(document).ready(function () {
+        $('#SP_Table').DataTable({
+            pageLength: 50,
+            ordering: false,
+
+            "language": {
+                "paginate": {
+                    "next": "الصفحة التالية",
+                    "previous": "الصفحة السابقة"
+                },
+                "emptyTable": "لا يوجد بيانات للعرض ",
+                "info": "عرض _START_ الي _END_ من _TOTAL_ طلبات",
+                "infoEmpty": "Showing 0 to 0 of 0 entries",
+                "infoFiltered": "(تم البحث في  _MAX_ طلب)",
+                "search": "البحث:",
+                "zeroRecords": "لا يوجد بيانات مطابقة للبحث",
+                "lengthMenu": "عرض _MENU_ طلب في الصفحة ",
+
+            },
+            "pagingType": "numbers"
+
+        })
+    })
+</script>  
+{% endblock script %}

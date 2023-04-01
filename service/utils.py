@@ -1,14 +1,13 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
-from django.db.models import Max
+from django.db.models import Count, DateField, Max, Q
+from django.db.models.functions import Cast
+from django.utils import timezone
+
+from core.models import LateDays
 
 from . import models
 
-from core.models import LateDays
-from django.utils import timezone
-from django.db.models.functions import Cast
-from django.db.models import Q ,  DateField
-from datetime import timedelta
 
 def generate_ref_number(service_type):
 
@@ -28,20 +27,24 @@ def generate_ref_number(service_type):
 
 
 def get_late_count(service):
-    
+
     days = LateDays.objects.last().days
     threshold_date = timezone.now() - timedelta(days=days - 1)
-    if service == 'install' :
+    if service == 'install':
         late_orders_count = models.Service.objects.install().annotate(
             created_date=Cast('created_at', DateField())
         ).filter(
             Q(status='new') & Q(created_date__lte=threshold_date)
         ).count()
-    elif service == 'repair' :
+    elif service == 'repair':
         late_orders_count = models.Service.objects.repair().annotate(
             created_date=Cast('created_at', DateField())
         ).filter(
             Q(status='new') & Q(created_date__lte=threshold_date)
         ).count()
-    
+    else:
+        late_orders = models.Service.objects.filter(
+            created_at__lte=threshold_date, status='new')
+        late_orders_count = late_orders.aggregate(count=Count('id'))['count']
+
     return late_orders_count

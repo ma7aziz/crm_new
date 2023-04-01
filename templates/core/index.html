@@ -9,7 +9,7 @@
     hx-trigger="click" 
     hx-swap="innerHTML"
     hx-target="#data"
-    hx-get="/empty_htmx">
+    hx-get="/index_data?service=all">
         <div class="card">
             <div class="card-body">
                 
@@ -61,13 +61,44 @@
     hx-trigger="click" 
     hx-swap="innerHTML"
     hx-target="#data"
+    hx-get="/index_data?service=quarter">
+        <div class="card">
+            <div class="card-body">
+         
+                    <div class="text-center">
+                        <h6 class="text-muted mt-2 mb-2">مشاريع كوارتر </h6>
+                        <h2>{{quarter_count}}</h2>
+                        <h5 class="text-success">{{quarter_new_count}} مشاريع جديدة </h5>
+                    </div>
+ 
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6 col-md-6 pointer"
+    hx-trigger="click" 
+    hx-swap="innerHTML"
+    hx-target="#data"
     hx-get="/index_data?service=hold">
+        <div class="card">
+            <div class="card-body ">
+                    <div class="text-center">
+                        <h6 class="text-muted mt-1 mb-1">الطلبات المعلقة</h6>
+                        <h2>{{on_hold_count}}</h2>
+                    </div>
+ 
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6 col-md-6 pointer"
+    hx-trigger="click" 
+    hx-swap="innerHTML"
+    hx-target="#data"
+    hx-get="/index_data?service=late">
         <div class="card">
             <div class="card-body">
                     <div class="text-center">
-                        <h6 class="text-muted mt-2 mb-2">الطلبات المعلقة</h6>
-                        <h2>{{on_hold_count}}</h2>
-                        <h5>&nbsp; &nbsp;</h5>
+                        <h6 class="text-muted mt-1 mb-1">الطلبات المتأخرة</h6>
+                        <h2>{{late_count}}</h2>
                     </div>
  
             </div>
@@ -75,13 +106,13 @@
     </div>
 </div>
 
-<div  id="data">
+<!-- <div  id="data">
 
-</div>
-<div class="card card-body">
+</div> -->
+<div class="card card-body" id="data">
         <h3>الطلبات الجديدة</h3>
     <div class="table-responsive">
-        <table class="table search-table " id="newServiceTable">
+        <table class="table search-table " id="serviceTable">
             <thead class="header-item bg-dark text-light text-center">
                 <th>#</th>
                 <th>رقم الطلب </th>
@@ -160,7 +191,7 @@
   
 <script>
     $(document).ready(function () {
-        $('#newServiceTable').DataTable({
+        $('#serviceTable').DataTable({
             pageLength: 50,
             ordering: false,
             scrollY: 350,

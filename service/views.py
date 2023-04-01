@@ -166,7 +166,7 @@ class CreateService(generic.CreateView):
 
     def form_invalid(self, form):
         messages.error(self.request, 'حدث خطأ .. يرجي المحاولة مرة اخري  !')
-        return super().form_invalid(form)
+        return HttpResponseRedirect(self.request.META.get('HTTP_REFERER'))
 
 
 class ServiceDetails(generic.DetailView):

@@ -2,7 +2,7 @@
     <div class="card-body">
         <h3>طلبات معلقة</h3>
             <div class="table-responsive">
-                <table class="table search-table " id="serviceIntsallTable">
+                <table class="table search-table " id="onHold">
                     <thead class="header-item bg-dark text-light text-center">
                         <th>#</th>
                         <th>رقم الطلب </th>
@@ -80,10 +80,9 @@
 {% block script %}
 <script>
     $(document).ready(function () {
-        $('#serviceIntsallTable').DataTable({
+        $('#onHold').DataTable({
             pageLength: 50,
             ordering: false,
-            scrollY: 350,
             "language": {
                 "paginate": {
                     "next": "الصفحة التالية",

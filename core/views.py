@@ -7,7 +7,11 @@ from .forms import CustomerForm
 from .filters import CustomerFilter
 from service.models import Service, SparePartRequest, Appointment
 from django.db.models import Count, Q
-
+from quarter.models import QuarterProject
+from .models import LateDays
+from datetime import timedelta
+from django.utils import timezone
+from service.utils import get_late_count
 
 class Index(generic.View):
     def get(self, request):
@@ -29,10 +33,14 @@ class Index(generic.View):
                     'id', filter=Q(status='under_process')),
                 on_hold_count=Count('id', filter=Q(hold=True))
             )
+            quarter = QuarterProject.objects.aggregate(total_count = Count('id'),
+                                                    new_count = Count('id' ,  filter=Q(status = 'new')))
             new_requests = Service.objects.all().filter(status='new')
             template = 'core/index.html'
             ctx = {
-                'total_count': counts['total_counts'],
+                'total_count': counts['total_counts'] + quarter['total_count'],
+                'quarter_count': quarter['total_count'],
+                'quarter_new_count': quarter['new_count'],
                 'repair_count': counts['repair_count'],
                 'repair_new_count': counts['repair_new_count'],
                 'install_count': counts['install_count'],
@@ -40,7 +48,8 @@ class Index(generic.View):
                 'new_count': counts['new_count'],
                 'under_process_count': counts['under_process_count'],
                 'on_hold_count': counts['on_hold_count'],
-                'new_requests': new_requests
+                'new_requests': new_requests,
+                'late_count' : get_late_count('all')
 
             }
         elif request.user.role == 'sales':
@@ -178,6 +187,29 @@ def index_data(request):
         template = base_temp_name + 'hold.html'
         ctx = {
             'services': Service.objects.repair().filter(hold=True)
+        }
+    elif service_type == 'late':
+        template = base_temp_name + 'late.html'
+        days = LateDays.objects.last().days
+        days_ago = timezone.now() - timedelta(days=days - 1)
+        late_orders = Service.objects.filter(status='new', created_at__lte=days_ago)
+
+        ctx = {
+            'services': late_orders,
+        }
+    elif service_type == 'quarter':
+        template = base_temp_name + 'quarter.html'
+        ctx = {
+            'services': QuarterProject.objects.all()
+        }
+    elif service_type == 'all':
+        template = base_temp_name + 'all.html'
+        quarter = QuarterProject.objects.all().filter(status = 'new')
+        service= Service.objects.new()
+
+        ctx = {
+            'services': service,
+            'quarter' : quarter
         }
 
     return render(request, template, ctx)

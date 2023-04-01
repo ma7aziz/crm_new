@@ -73,7 +73,7 @@
                     <td>{{project.phone_number}}</td>
                     <td>{{project.created_at.date}}</td>
                     <td>
-                        <a href="">
+                        <a href="{% url 'quarter:project_details' project.id %}">
 
                         {% if project.hold %}
                         <span class="badge round-pill bg-danger">معلق</span>

@@ -73,7 +73,7 @@ class Service(models.Model):
         '''
         days = LateDays.objects.last().days
         three_days_ago = timezone.now() - timedelta(days=days - 1)
-        return self.status == 'new' and self.created_at <= three_days_ago
+        return self.status == 'new' and self.created_at <= three_days_ago and self.hold == False
 
     def has_open_sp_requests(self):
         '''
