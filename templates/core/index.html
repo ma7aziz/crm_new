@@ -98,7 +98,6 @@
                 <!-- row -->
                 {% for service in new_requests %}
 
-                <a href="{% url 'service:service_details' service.id %}">
                 <tr class="search-items text-center {% if service.late %} bg-light-danger {% endif %}">
 
                     <td>{{forloop.counter}} </td>

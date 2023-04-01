@@ -131,7 +131,7 @@ class CreateService(generic.CreateView):
     '''
     model = models.Service
     fields = ['customer', 'address', 'customer_type', 'favourite', 'phone_number',
-              'service_type', 'machine_type', 'invoice_number', 'notes']
+              'service_type', 'machine_type', 'invoice_number', 'notes' , 'ac_count']
     success_url = reverse_lazy('core:index')
     template_name = 'service/service_create.html'
 

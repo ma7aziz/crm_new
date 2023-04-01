@@ -38,6 +38,7 @@ class Service(models.Model):
     notes = models.CharField(max_length=255, blank=True, null=True)
     company = models.ForeignKey(User, on_delete=models.SET_NULL,
                                 null=True, blank=True, related_name='warranty_company')
+    ac_count = models.PositiveIntegerField(default=0 )
     created_at = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(
         User, on_delete=models.SET_NULL, null=True, blank=True)

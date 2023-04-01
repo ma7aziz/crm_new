@@ -47,6 +47,12 @@
             <li class="list-group-item">رقم الفاتورة : <span class="text-primary">
                     {{service.invoice_number}}</span></li>
             {% endif %}
+            {% if service.service_type == 'install'%}
+
+                <li class="list-group-item">
+                    عدد المكيفات : <span class="text-primary">{{service.ac_count}}</span>
+                </li>
+            {% endif %}
 
             {% if request.user.role == 'install_supervisor' or request.user.role  == 'repair_supervisor' or request.user.is_superuser %}
             <li class="list-group-item">
