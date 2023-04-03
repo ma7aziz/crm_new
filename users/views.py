@@ -92,6 +92,7 @@ class EditUserDetails( generic.View):
             
             user.install = bool(request.POST.get('install', False))
             user.repair = bool(request.POST.get('repair', False))
+            user.quarter = bool(request.POST.get('quarter', False))
             user.save()
             messages.success(request , 'تم تحديث بيانات المستخدم !')
             

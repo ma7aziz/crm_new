@@ -7,7 +7,7 @@ class CreateUserForm(UserCreationForm):
         model = models.User
         install =  forms.BooleanField(label='التركيب' , required=False)
         repair = forms.BooleanField(label='الصيانة' , required=False)
-        fields = ('username', 'name','password1' ,'password2' , 'phone_number', 'role',  'favourite_qouta' , 'install' , 'repair') 
+        fields = ('username', 'name','password1' ,'password2' , 'phone_number', 'role',  'favourite_qouta' , 'install' , 'repair' , 'quarter') 
         labels = {
             'username': 'اسم المستخدم',
             'name': 'الاسم الكامل ',

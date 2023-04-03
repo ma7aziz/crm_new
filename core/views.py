@@ -9,9 +9,10 @@ from service.models import Service, SparePartRequest, Appointment
 from django.db.models import Count, Q
 from quarter.models import QuarterProject
 from .models import LateDays
-from datetime import timedelta
+from datetime import timedelta, datetime
 from django.utils import timezone
-from service.utils import get_late_count
+from service.utils import get_late_count 
+from .utils import generate_report
 
 class Index(generic.View):
     def get(self, request):
@@ -24,18 +25,18 @@ class Index(generic.View):
 
                 repair_count=Count('id', filter=Q(service_type='repair')),
                 repair_new_count=Count('id', filter=Q(
-                    service_type='repair', status='new')),
+                    service_type='repair', status='new', hold=False)),
                 install_count=Count('id', filter=Q(service_type='install')),
                 install_new_count=Count('id', filter=Q(
-                    service_type='install', status='new')),
-                new_count=Count('id', filter=Q(status='new')),
+                    service_type='install', status='new', hold=False)),
+                new_count=Count('id', filter=Q(status='new', hold=False)),
                 under_process_count=Count(
                     'id', filter=Q(status='under_process')),
                 on_hold_count=Count('id', filter=Q(hold=True))
             )
-            quarter = QuarterProject.objects.aggregate(total_count = Count('id'),
-                                                    new_count = Count('id' ,  filter=Q(status = 'new')))
-            new_requests = Service.objects.all().filter(status='new')
+            quarter = QuarterProject.objects.aggregate(total_count=Count('id'),
+                                                       new_count=Count('id',  filter=Q(status='new')))
+            new_requests = Service.objects.all().filter(status='new', hold=False)
             template = 'core/index.html'
             ctx = {
                 'total_count': counts['total_counts'] + quarter['total_count'],
@@ -49,7 +50,7 @@ class Index(generic.View):
                 'under_process_count': counts['under_process_count'],
                 'on_hold_count': counts['on_hold_count'],
                 'new_requests': new_requests,
-                'late_count' : get_late_count('all')
+                'late_count': get_late_count('all')
 
             }
         elif request.user.role == 'sales':
@@ -161,9 +162,21 @@ class Archive(generic.ListView):
         print(qs.explain())
         return qs
 
+
+class Reports(generic.View):
+    def get(self, request):
+        start_date = request.GET.get('start_date') 
+        end_date = request.GET.get('end_data') 
+
+        report = generate_report(start_date , end_date)
+        ctx =  {
+            'report' : report , 
+            
+        }
+        return render(request, 'core/reports.html' , ctx)
+
+
 # dashboard htmx
-
-
 def index_data(request):
     '''
     Htmx tables in index page 
@@ -192,7 +205,8 @@ def index_data(request):
         template = base_temp_name + 'late.html'
         days = LateDays.objects.last().days
         days_ago = timezone.now() - timedelta(days=days - 1)
-        late_orders = Service.objects.filter(status='new', created_at__lte=days_ago)
+        late_orders = Service.objects.filter(
+            status='new', created_at__lte=days_ago)
 
         ctx = {
             'services': late_orders,
@@ -204,12 +218,12 @@ def index_data(request):
         }
     elif service_type == 'all':
         template = base_temp_name + 'all.html'
-        quarter = QuarterProject.objects.all().filter(status = 'new')
-        service= Service.objects.new()
+        quarter = QuarterProject.objects.all().filter(status='new')
+        service = Service.objects.new()
 
         ctx = {
             'services': service,
-            'quarter' : quarter
+            'quarter': quarter
         }
 
     return render(request, template, ctx)
@@ -217,3 +231,59 @@ def index_data(request):
 
 def empty_htmx(request):
     return render(request, 'core/empty_htmx.html')
+
+
+# # # Charts 
+class Charts(generic.View):
+    def get(self , request ):
+
+        return render(request, 'core/charts.html')
+
+
+from django.http import JsonResponse
+from django.db.models.functions import TruncDate
+from django.db.models import Count
+
+class ServiceChartView(generic.View):
+    def get(self, request, *args, **kwargs):
+        start_date = request.GET.get('start_date')
+        end_date = request.GET.get('end_date')
+        start_date = datetime.strptime(start_date, '%Y-%m-%d')
+        end_date = datetime.strptime(end_date, '%Y-%m-%d')
+        data = Service.objects.filter(created_at__gte =start_date, created_at__lte = end_date).values('service_type').annotate(count=Count('id'))
+        
+        
+        service_labels = [item['service_type'] for item in data]
+        service_counts = [item['count'] for item in data]
+        
+        
+        # Quarter 
+        quarter =QuarterProject.objects.filter(created_at__gte =start_date, created_at__lte = end_date)
+        quarter_lable = ['Qurater']
+        quarter_counts = [quarter.count()]
+        labels = service_labels + quarter_lable
+        counts = service_counts + quarter_counts
+        return JsonResponse({'labels': labels, 'counts': counts})
+    
+class SalesPerformance(generic.View):
+    def get(self , request):
+        start_date = request.GET.get('start_date')
+        end_date = request.GET.get('end_date')
+        start_date = datetime.strptime(start_date, '%Y-%m-%d')
+        end_date = datetime.strptime(end_date, '%Y-%m-%d')
+        data = Service.objects.filter(created_at__gte =start_date, created_at__lte = end_date).values('created_by__username').annotate(count=Count('id'))
+        labels = [item['created_by__username'] for item in data]
+        counts = [item['count'] for item in data]
+        return JsonResponse({'labels': labels, 'counts': counts})
+    
+class DailyPerformance(generic.View):
+    def get(self , request):
+        start_date = request.GET.get('start_date')
+        end_date = request.GET.get('end_date')
+        start_date = datetime.strptime(start_date, '%Y-%m-%d')
+        end_date = datetime.strptime(end_date, '%Y-%m-%d')
+        data = Service.objects.filter(created_at__gte =start_date, created_at__lte = end_date).annotate(date=TruncDate('created_at')).values('date').annotate(count=Count('id')).order_by('date')
+        labels = [d['date'].strftime('%Y-%m-%d') for d in data]
+        counts = [d['count'] for d in data]
+        return JsonResponse({'labels': labels, 'counts': counts})
+        

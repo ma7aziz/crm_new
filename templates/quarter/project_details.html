@@ -48,24 +48,32 @@
 
         {% if excution_files %}
         <div class="card card-body">
-            <h4>ملفات المشروع</h4>
-            <div class="d-flex justify-content-around">
-                {% for file in excution_files.files.all %}
-                <a href="{{file.file.url}}">ملف {{forloop.counter}}</a>
-                {% endfor %}
-            </div>
+                <h4>ملفات المشروع</h4>
+                <ul class="list-group">
 
+                    {% for file in excution_files.files.all %}
+                    <li class="list-group-item">
+
+                        <a href="{{file.file.url}}">ملف {{forloop.counter}}</a>
+                    </li>
+                    {% endfor %}
+                </ul>
         </div>
         {% endif %}
     </div>
     <div class="col-6">
         <div class="card card-body">
             <!-- edit -->
+            {%  if request.user.is_superuser %}
+            {% if project.status == 'new' or project.status == 'negotiation' %}
             <button class="btn btn-warning pointer" data-bs-target="#edit_project" data-bs-toggle="modal">تعديل بيانات
                 المشروع</button>
+            
             <!-- delete -->
             <button class="btn btn-danger my-2" data-bs-target="#project_delete_approve" data-bs-toggle="modal"> حذف
                 المشروع </button>
+            {% endif %}
+            {% endif %}
             {% if project.status ==  'new'  %}
             {% if request.user.is_superuser or  request.user.role == 'quarter_supervisor'  %}
             <form action="{% url 'quarter:start_negotiation' %}" method="post">
@@ -76,7 +84,7 @@
             {% endif %}
             {% endif %}
 
-        </div>
+
         {% if project.status == 'negotiation' %}
 
         <div class="card card-body">
@@ -104,7 +112,12 @@
         </div>
         {% endif %}
         {% if project.status == 'waiting_designs' %}
-        {% if request.user.is_superuser  or request.user.role == 'egypt_office' %}
+        {% if request.user.role == 'quarter_supervisor' %}
+            <div class="card card-body">
+                <h3>تم اتمام التفاوض مع العميل .. في انتظار ملفات المشروع </h3>
+            </div>
+
+        {% elif request.user.is_superuser  or request.user.role == 'egypt_office' %}
         <div class="card card-body">
             <h4>ارفاق التصاميم و العقود </h4>
             <form action="{% url 'quarter:attach_files' %}" method="post" novalidate class="needs-validation"
@@ -135,10 +148,16 @@
         {% if project.status == 'waiting_approval' %}
         <div class="card card-body">
             <h4>ملفات المشروع</h4>
-            <div class="d-flex justify-content-around">
-                {% for file in excution_files.files.all %}
-                <a href="{{file.file.url}}">ملف {{forloop.counter}}</a>
-                {% endfor %}
+            <div class="">
+                <ul class="list-group">
+
+                    {% for file in excution_files.files.all %}
+                    <li class="list-group-item">
+
+                        <a href="{{file.file.url}}">ملف {{forloop.counter}}</a>
+                    </li>
+                    {% endfor %}
+                </ul>
             </div>
             {% if request.user.is_superuser  or request.user.role == 'accountant' %}
 
@@ -155,6 +174,19 @@
         </div>
         {% endif %}
         {% if project.status == 'under_process'  %}
+        <h4 class="text-primary">جاري تنفيذ الطلب </h4>
+        <h6>ملفات المشروع</h6>
+            <div class="">
+                <ul class="list-group">
+
+                    {% for file in excution_files.files.all %}
+                    <li class="list-group-item">
+
+                        <a href="{{file.file.url}}">ملف {{forloop.counter}}</a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
         {% if request.user.is_superuser  or request.user.role == 'accountant'  %}
         <div class="card card-body">
             <form action="{% url 'quarter:confirm_project' %}" method="post">
@@ -165,7 +197,14 @@
         </div>
         {% endif %}
         {% endif %}
+
+        {% if project.status == 'done'%}
+            <h3>تم تنفيذ المشروع</h3>
+            <p>تاريخ انهاء المشروع : <span class="text-primary">{{project.closed_date}}</span></p>
+
+        {% endif %}
     </div>
+</div>
 </div>
 
 

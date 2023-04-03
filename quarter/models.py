@@ -31,6 +31,7 @@ class QuarterProject(models.Model):
     created_by = models.ForeignKey(User , on_delete=models.SET_NULL , null = True )
     created_at = models.DateTimeField(auto_now_add=True )
     last_update = models.DateTimeField(auto_now=True )
+    closed_date = models.DateTimeField(null = True , blank = True )
     
 
     def __str__(self) :

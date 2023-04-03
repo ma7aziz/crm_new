@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 
-from django.db.models import Count, DateField, Max, Q
+from django.db.models import Count, DateField, Max, Q ,Sum
 from django.db.models.functions import Cast
 from django.utils import timezone
 

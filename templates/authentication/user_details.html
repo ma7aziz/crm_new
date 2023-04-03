@@ -65,7 +65,9 @@
                         عدد المفضلات المتبقي لليوم : <span class="text-primary">{{user.remaining_qouta}}</span>
                     </li>
                     <li class="list-group-item text-muted">
-                        الخدمات المسموحة للمستخدم : <span class="text-primary"> {% if user.install %} التركيب {% endif %}</span>  <span class="text-primary">{% if user.repair %}  الصيانة{% endif %}</span>
+                        الخدمات المسموحة للمستخدم : <span class="text-primary"> {% if user.install %} التركيب {% endif %}</span> 
+                         <span class="text-primary">{% if user.repair %}  الصيانة{% endif %} </span>
+                         <span class="text-primary">{% if user.quarter %}  كوارتر{% endif %} </span>
                     </li>
                 </ul>
 

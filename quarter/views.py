@@ -6,6 +6,7 @@ from .forms import QuarterProjectForm
 from django.contrib import messages
 from django.urls import reverse_lazy
 from django.db.models import Q
+from django.utils import timezone
 
 # Create your views here.
 
@@ -142,6 +143,7 @@ class ConfirmProject(generic.View):
         project = models.QuarterProject.objects.get(pk=request.POST['project'])
         if project.status == 'under_process':
             project.status = 'done'
+            project.closed_date = timezone.now()
             project.save()
         else:
             project.status = 'under_process'

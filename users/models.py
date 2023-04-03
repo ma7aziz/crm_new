@@ -12,6 +12,7 @@ class CustomUserManager(UserManager):
         extra_fields.setdefault('role', 'admin')
         extra_fields.setdefault('install' , True)
         extra_fields.setdefault('repair' , True)
+        extra_fields.setdefault('quarter' , True)
         return super().create_superuser(username, email, password, **extra_fields)
 
 class User(AbstractUser):
@@ -32,7 +33,7 @@ class User(AbstractUser):
             self.install = True 
         if self.role == 'repair_supervisor' : 
             self.repair = True 
-        if self.role == 'quarter_supervisor' :
+        if self.role in ['quarter_supervisor' , 'accountant' , 'excution' , 'quarter_sales' ]:
             self.quarter = True 
         return super().save(*args, **kwargs)
         
