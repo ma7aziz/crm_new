@@ -2,7 +2,7 @@
 //select2 
 $('#customerSelect').select2({
     placeholder: 'اختر من القائمة ',
-    minimumInputLength: 4,
+    minimumInputLength: 2,
     ajax: {
         url: "/api/customers",
         dataType: 'json',
