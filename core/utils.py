@@ -19,7 +19,7 @@ def generate_report(start_date = None , end_date = None):
         end_date = timezone.now()
 
         # Get the count of services done between certain dates
-    services = Service.objects.filter(created_at__range=[start_date, end_date])
+    services = Service.objects.filter(created_at__range=[start_date, end_date] )
     quarter = QuarterProject.objects.filter(created_at__range=[start_date , end_date])
     quarter_count =  quarter.count()
     total_count = services.count() + quarter_count

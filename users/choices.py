@@ -7,7 +7,6 @@ USER_ROLES = (
     ('sales' , 'بائع'),
     ('quarter_supervisor' , 'مشرف كوارتر '),
     ('accountant' , 'محاسب'),
-    ('excution' , 'تنفيذ كوارتر '),
-    ('quarter_sales' , 'مبيعات كوارتر '),
+    ('quarter_sales' , 'مندوب كوارتر'),
     ('egypt_office' , 'مكتب مصر  '),
 )

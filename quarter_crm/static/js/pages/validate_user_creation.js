@@ -1,5 +1,5 @@
 //validate password1 == password 2 
-// password length => 8  , has one letter 
+// password length =>4   
 let password1 = document.querySelector('input[name="password1"]')
 let password2 = document.querySelector('input[name="password2"]')
 let invalidFeedback = document.getElementById('validation')
@@ -9,9 +9,9 @@ function validatePasswords() {
     //check if user input 2 passwords
     if (password1.value && password2.value) {
         //if 2 password => check password format 
-        if (password1.value.length < 8 || !/[a-zA-Z]/.test(password1.value)) {
+        if (password1.value.length < 4 ) {
             document.getElementById('password1-validation').innerText =
-                ' !رمز المرور يتكون من 8 حروف و أرقام علي الأقل';
+                ' !رمز المرور يتكون من 4 حروف و أرقام علي الأقل';
             password1.classList.add('is-invalid');
             password2.classList.add('is-invalid')
 

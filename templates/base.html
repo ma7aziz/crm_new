@@ -163,7 +163,7 @@
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle waves-effect waves-dark" href="#"
                                 data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <img src="{% static 'img/user.jpg' %}" alt="user" width="30"
+                                <img src="{% static 'img/avatar.jpg' %}" alt="user" width="50"
                                     class="profile-pic rounded-circle" />
                             </a>
                             <div class="dropdown-menu dropdown-menu-end user-dd animated flipInY">
@@ -177,7 +177,10 @@
                                     </div>
                                 </div>
 
-                                <a class="dropdown-item" href=""><i data-feather="log-out"
+                                
+                                <a class="dropdown-item" href="" data-bs-target="#change_password_modal" data-bs-toggle="modal">تغيير كلمة السر </a>
+
+                                <a class="dropdown-item" href="{% url 'users:logout' %}"><i data-feather="log-out"
                                         class="feather-sm text-danger me-1 ms-1"></i> خروج</a>
                             </div>
                         </li>
@@ -360,6 +363,47 @@
 
 
                 {% endblock %}
+                <div class="modal custom-modal fade" id="change_password_modal" role="dialog" tabindex="-1">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                <div class="form-header text-center ">  
+                                    <h3>تغيير كلمة السر </h3>
+                                </div>
+                                <form action="{% url 'users:change_password' %}" method="POST" >
+                                    <input type="hidden" name="user" value="{{request.user.id}}">
+                                    {% csrf_token%}
+                                    <div>
+                                        <label for="">كلمة السر الجديدة </label>
+                                        <input type="password" name="password1" class="form-control">
+                                        <div class="invalid-feedback" id="password1-validation">
+                                            يرجي ادخال رمز المرور
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label for="">تأكيد كلمة السر </label>
+                                        <input type="password" name="password2" class="form-control">
+                                        <div class="invalid-feedback">
+                                            يرجي تأكيد رمز المرور
+                                        </div>
+                                    </div>
+                           
+                                    <div class="modal-btn delete-action my-3">
+                                        <div class="row text-center">
+                                            <div class="col-6">
+                                                <button type="submit" class="btn btn-success continue-btn w-100">حفظ</button>
+                                            </div>
+                
+                                            <div class="col-6">
+                                                <a href="javascript:void(0);" data-bs-dismiss="modal" class="btn btn-primary cancel-btn w-100">الغاء</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 {% include 'service/modals/repair_modal.html'%}
                 {% include 'service/modals/install_modal.html'%}
                 {% include 'quarter/modals/create_project_modal.html'%}
@@ -404,6 +448,7 @@
     <script src="{% static 'asset/libs/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js' %}"></script>
     <script src="{% static 'asset/extra-libs/datatables.net/js/jquery.dataTables.min.js' %}"></script>
     <script src="https://unpkg.com/htmx.org@1.8.6"></script>
+    <script src="{% static 'js/pages/validate_user_creation.js' %}"></script>
     <script>
         
     (function () {

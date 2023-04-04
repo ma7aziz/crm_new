@@ -108,7 +108,7 @@ class ChangeUserPassword(generic.View):
             password2 = request.POST['password2']
             if password1 == password2 :
                 user.set_password(password1)
-                user.save
+                user.save()
             else: 
                 messages.error(request , 'رمز المرور غير متطابق !! ')
             messages.success(request , 'تم تحديث بيانات المستخدم !')

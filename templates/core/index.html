@@ -152,7 +152,7 @@
                     <td>{{service.phone_number}}</td>
                     <td>{% if service.invoice_number %} {{service.invoice_number}} {% endif %} </td>
                     <td><a href="{% url 'users:user_details' service.created_by.id %}">{{service.created_by}}</a></td>
-                    <td>{{service.created_at.date}}</td>
+                    <td>{{service.created_at.date|date:"F j"}}</td>
                     <td>
                         
                         <a href="{% url 'service:service_details' service.id %}">

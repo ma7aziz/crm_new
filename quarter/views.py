@@ -11,8 +11,6 @@ from django.utils import timezone
 # Create your views here.
 
 # list view
-
-
 class ProjectList(generic.ListView):
     model = models.QuarterProject
     template_name = 'quarter/project_list.html'
@@ -82,6 +80,7 @@ class StartNegotiation(generic.View):
         )
         negotiation.save()
         project.status = 'negotiation'
+        project.rep = request.user
         project.save()
         messages.success(request, 'بدأ المفاوضات  !!')
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))

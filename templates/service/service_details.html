@@ -105,12 +105,13 @@
                             {% endif %}
                         </div>
                         {% if req.status == 'pending' %}
+                        {% if request.user.is_superuser or request.user.role == 'repair_supervisor' %}
                         <form action="{% url 'service:confirm_sp_recievce' %}" method="post">
                             {% csrf_token %}
                             <input type="hidden" name="sp_request" value="{{req.id}}">
                             <button type="submit" class="btn btn-success">تأكيد الاستلام</button>
                         </form>
-
+                        {% endif %}
                         {% endif %}
                     </li>
 

@@ -433,6 +433,7 @@ def render_service_data(request):
     service = request.GET['service']
     data = request.GET['data']
     templates = {
+        ('install', 'all'): base_temp_name + 'all.html',
         ('install', 'new'): base_temp_name + 'new_services.html',
         ('install', 'under_process'): base_temp_name + 'under_process.html',
         ('install', 'upcoming_appoints'): base_temp_name + 'upcoming_appointments.html',
@@ -440,6 +441,7 @@ def render_service_data(request):
         ('install', 'on_hold'): base_temp_name + 'on_hold.html',
         ('install', 'new_favourite'): base_temp_name + 'favs.html',
         ('install', 'processing_favourite'): base_temp_name + 'favs.html',
+        ('repair', 'all'): base_temp_name + 'all.html',
         ('repair', 'new'): base_temp_name + 'new_services.html',
         ('repair', 'under_process'): base_temp_name + 'under_process.html',
         ('repair', 'upcoming_appoints'): base_temp_name + 'upcoming_appointments.html',
@@ -455,6 +457,9 @@ def render_service_data(request):
     late_install_services = [
         service for service in late_services if service.service_type == 'install']
     ctxs = {
+        ('install', 'all'): {
+            'services': models.Service.objects.install().filter( archive =False )
+        },
         ('install', 'upcoming_appoints'): {
             'appointments': models.Appointment.objects.upcoming_install()
         },
@@ -462,7 +467,7 @@ def render_service_data(request):
             'services': late_install_services
         },
         ('install', 'new'): {
-            'services': models.Service.objects.new().filter(service_type='install'),
+            'services': models.Service.objects.new().filter(service_type='install' , hold = False),
             'title': 'طلبات التركيب الجديدة '
         },
         ('install', 'under_process'): {
@@ -473,22 +478,24 @@ def render_service_data(request):
             'services': models.Service.objects.hold().filter(service_type='install')
         },
         ('install', 'new_favourite'): {
-            'services': models.Service.objects.install().filter(favourite=True, status='new'),
+            'services': models.Service.objects.install().filter(favourite=True, status='new' , hold = False),
             'title': 'مفضلات التركيب الجديدة '
         },
         ('install', 'processing_favourite'): {
             'services': models.Service.objects.install().filter(favourite=True, status='under_process'),
             'title': 'مفضلات التركيب جاري تنفيذها  '
         },
+        ('repair', 'all'): {
+            'services': models.Service.objects.repair().filter( archive =False )} ,
         ('repair', 'upcoming_appoints'): {
             'appointments': models.Appointment.objects.upcoming_repair()
         },
         ('repair', 'new'): {
-            'services': models.Service.objects.new().filter(service_type='repair'),
+            'services': models.Service.objects.new().filter(service_type='repair' , hold = False),
             'title': 'طلبات الصيانة الجديدة '
         },
         ('repair', 'under_process'): {
-            'services': models.Service.objects.under_process().filter(service_type='repair').exclude(hold=True),
+            'services': models.Service.objects.under_process().filter(service_type='repair', hold = False),
             'title': 'طلبات الصيانة الجارية '
         },
         ('repair', 'late_services'): {

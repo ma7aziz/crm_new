@@ -81,7 +81,7 @@
                             {{service.get_service_type_display}}
                         </span>
                     </td>
-                    <td>{{service.created_at.date}}</td>
+                    <td>{{service.created_at.date|date:"F j"}}</td>
                     <td>
                         <span class="badge rounded-pill 
                     {% if service.status  == 'new' %}
@@ -127,7 +127,7 @@
                 <th>نوع الطلب </th>
                 <th>التاريخ</th>
                 <th>حالة الطلب </th>
-                <th>Action</th>
+
             </thead>
             <tbody>
                 <!-- row -->
@@ -154,7 +154,7 @@
                             {{service.get_service_type_display}}
                         </span>
                     </td>
-                    <td>{{service.created_at.date}}</td>
+                    <td>{{service.created_at.date|date:"F j"}}</td>
                     <td>
                         <span class="badge rounded-pill 
                     {% if service.status  == 'new' %}
@@ -169,17 +169,7 @@
                         </span>
 
                     </td>
-                    <td>
-                        <div class="action-btn">
-                            <a href="" class="text-info edit"><i data-feather="eye"
-                                    class="feather-sm fill-white"></i></a>
-                            {% if perms.sales.delete_customer %}
-                            <a class="text-dark delete ms-2" id="delete_approve_btn" data-url="" data-bs-toggle="modal"
-                                data-bs-target="#delete_approve"><i data-feather="trash-2"
-                                    class="feather-sm fill-white"></i></a>
-                            {% endif %}
-                        </div>
-                    </td>
+            
                 </tr>
                 {% endfor %}
                 <!-- /.row -->
@@ -212,13 +202,13 @@
                     </td>
 
 
-                    <td> <a>{{req.service.customer.name}}</a>
+                    <td> <a>{{req.service.name}}</a>
                     </td>
                     <td>{{req.service.machine_type}}</td>
                     <td>{{req.requested_parts}}</td>
 
                     
-                    <td>{{req.created_at.date}}</td>
+                    <td>{{req.created_at.date|date:"F j"}}</td>
                     <td>
                         <span class="badge rounded-pill 
                     {% if req.status  == 'pending' %}

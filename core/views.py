@@ -1,18 +1,24 @@
-from django.shortcuts import render, redirect
-from django.urls import reverse_lazy
-from django.views import generic
+from datetime import datetime, timedelta
+
 from django.contrib import messages
-from . import models
-from .forms import CustomerForm
-from .filters import CustomerFilter
-from service.models import Service, SparePartRequest, Appointment
 from django.db.models import Count, Q
-from quarter.models import QuarterProject
-from .models import LateDays
-from datetime import timedelta, datetime
+from django.db.models.functions import TruncDate
+from django.http import JsonResponse
+from django.shortcuts import redirect, render
+from django.urls import reverse_lazy
 from django.utils import timezone
-from service.utils import get_late_count 
+from django.views import generic
+
+from quarter.models import QuarterProject
+from service.models import Appointment, Service, SparePartRequest
+from service.utils import get_late_count
+
+from . import models
+from .filters import CustomerFilter
+from .forms import CustomerForm
+from .models import LateDays
 from .utils import generate_report
+
 
 class Index(generic.View):
     def get(self, request):
@@ -165,15 +171,15 @@ class Archive(generic.ListView):
 
 class Reports(generic.View):
     def get(self, request):
-        start_date = request.GET.get('start_date') 
-        end_date = request.GET.get('end_data') 
+        start_date = request.GET.get('start_date')
+        end_date = request.GET.get('end_data')
 
-        report = generate_report(start_date , end_date)
-        ctx =  {
-            'report' : report , 
-            
+        report = generate_report(start_date, end_date)
+        ctx = {
+            'report': report,
+
         }
-        return render(request, 'core/reports.html' , ctx)
+        return render(request, 'core/reports.html', ctx)
 
 
 # dashboard htmx
@@ -229,61 +235,49 @@ def index_data(request):
     return render(request, template, ctx)
 
 
-def empty_htmx(request):
-    return render(request, 'core/empty_htmx.html')
-
-
-# # # Charts 
-class Charts(generic.View):
-    def get(self , request ):
-
-        return render(request, 'core/charts.html')
-
-
-from django.http import JsonResponse
-from django.db.models.functions import TruncDate
-from django.db.models import Count
-
 class ServiceChartView(generic.View):
     def get(self, request, *args, **kwargs):
         start_date = request.GET.get('start_date')
         end_date = request.GET.get('end_date')
         start_date = datetime.strptime(start_date, '%Y-%m-%d')
         end_date = datetime.strptime(end_date, '%Y-%m-%d')
-        data = Service.objects.filter(created_at__gte =start_date, created_at__lte = end_date).values('service_type').annotate(count=Count('id'))
-        
-        
+        data = Service.objects.filter(created_at__gte=start_date, created_at__lte=end_date).values(
+            'service_type').annotate(count=Count('id'))
+
         service_labels = [item['service_type'] for item in data]
         service_counts = [item['count'] for item in data]
-        
-        
-        # Quarter 
-        quarter =QuarterProject.objects.filter(created_at__gte =start_date, created_at__lte = end_date)
+
+        # Quarter
+        quarter = QuarterProject.objects.filter(
+            created_at__gte=start_date, created_at__lte=end_date)
         quarter_lable = ['Qurater']
         quarter_counts = [quarter.count()]
         labels = service_labels + quarter_lable
         counts = service_counts + quarter_counts
         return JsonResponse({'labels': labels, 'counts': counts})
-    
+
+
 class SalesPerformance(generic.View):
-    def get(self , request):
+    def get(self, request):
         start_date = request.GET.get('start_date')
         end_date = request.GET.get('end_date')
         start_date = datetime.strptime(start_date, '%Y-%m-%d')
         end_date = datetime.strptime(end_date, '%Y-%m-%d')
-        data = Service.objects.filter(created_at__gte =start_date, created_at__lte = end_date).values('created_by__username').annotate(count=Count('id'))
+        data = Service.objects.filter(created_at__gte=start_date, created_at__lte=end_date).values(
+            'created_by__username').annotate(count=Count('id'))
         labels = [item['created_by__username'] for item in data]
         counts = [item['count'] for item in data]
         return JsonResponse({'labels': labels, 'counts': counts})
-    
+
+
 class DailyPerformance(generic.View):
-    def get(self , request):
+    def get(self, request):
         start_date = request.GET.get('start_date')
         end_date = request.GET.get('end_date')
         start_date = datetime.strptime(start_date, '%Y-%m-%d')
         end_date = datetime.strptime(end_date, '%Y-%m-%d')
-        data = Service.objects.filter(created_at__gte =start_date, created_at__lte = end_date).annotate(date=TruncDate('created_at')).values('date').annotate(count=Count('id')).order_by('date')
+        data = Service.objects.filter(created_at__gte=start_date, created_at__lte=end_date).annotate(
+            date=TruncDate('created_at')).values('date').annotate(count=Count('id')).order_by('date')
         labels = [d['date'].strftime('%Y-%m-%d') for d in data]
         counts = [d['count'] for d in data]
         return JsonResponse({'labels': labels, 'counts': counts})
-        

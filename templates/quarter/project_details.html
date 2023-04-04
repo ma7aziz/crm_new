@@ -37,6 +37,10 @@
 
                    "> {{project.get_status_display}}
                 </li>
+                {% if project.rep %}
+                <li class="list-group-item"> مندوب التواصل: <span class="text-primary"><a
+                            href="{% url 'users:user_details' project.rep.id %}">{{project.rep}}</a></span>
+                {% endif %}
                 <li class="list-group-item"> البائع : <span class="text-primary"><a
                             href="{% url 'users:user_details' project.created_by.id %}">{{project.created_by}}</a></span>
                 </li>
@@ -75,7 +79,7 @@
             {% endif %}
             {% endif %}
             {% if project.status ==  'new'  %}
-            {% if request.user.is_superuser or  request.user.role == 'quarter_supervisor'  %}
+            {% if request.user.is_superuser or  request.user.role == 'quarter_supervisor' or request.user.role == 'quarter_sales'  %}
             <form action="{% url 'quarter:start_negotiation' %}" method="post">
                 {% csrf_token %}
                 <input type="hidden" name="project" value="{{project.id}}">
@@ -91,7 +95,8 @@
             <h4>جاري التفاوض</h4>
             <p> بدء التفاوض : {{project.negotiation_set.last.created_at}}</p>
             <p>بواسطة : {{project.negotiation_set.last.created_by}} </p>
-            {% if request.user.is_superuser or request.user.role == 'quarter_supervisor'  %}
+
+            {% if request.user.is_superuser or request.user.role == 'quarter_supervisor' or request.user ==  project.negotiation_set.last.created_by %}
             <div class="">
                 <form action="{% url 'quarter:negotiation_status' %}" method="post">
                     {% csrf_token %}
@@ -112,12 +117,12 @@
         </div>
         {% endif %}
         {% if project.status == 'waiting_designs' %}
-        {% if request.user.role == 'quarter_supervisor' %}
+
             <div class="card card-body">
                 <h3>تم اتمام التفاوض مع العميل .. في انتظار ملفات المشروع </h3>
             </div>
 
-        {% elif request.user.is_superuser  or request.user.role == 'egypt_office' %}
+        {% if request.user.is_superuser or request.user.role == 'quarter_supervisor'  or request.user.role == 'egypt_office' %}
         <div class="card card-body">
             <h4>ارفاق التصاميم و العقود </h4>
             <form action="{% url 'quarter:attach_files' %}" method="post" novalidate class="needs-validation"

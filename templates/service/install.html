@@ -19,7 +19,7 @@
     hx-trigger="click" 
     hx-swap="innerHTML"
     hx-target="#displayData"
-    hx-get="/empty_htmx">
+    hx-get="/service/get_data?service=install&data=all">
 
         <div class="card">
             <div class="card-body">
@@ -69,25 +69,11 @@
             </div>
         </div>
     </div>
-    <!-- <div class="col-lg-3 col-md-6 pointer" hx-trigger="click" hx-get="/service/get_data?service=install&data=under_process"
-        hx-target="#displayData" hx-swap="innerHTML">
-        <div class="card">
-            <div class="card-body">
-                <div class="text-center">
-                    <h6 class="text-muted mt-2 mb-2">طلبات جاري تنفيذها </h6>
-                    <h2>{{under_process_count}}</h2>
-                </div>
-
-            </div>
-        </div>
-    </div> -->
-</div>
-
-
-<div id="displayData">
 
 </div>
-<div class="card card-body">
+
+
+<div class="card card-body" id="displayData">
     <div class="table-responsive">
         <table class="table search-table " id="serviceTable">
             <thead class="header-item bg-dark text-light text-center">
@@ -115,7 +101,7 @@
                     <td>{{service.phone_number}}</td>
                     <td><a href="{% url 'users:user_details' service.created_by.id %}">{{service.created_by}}</a></td>
                     <td>{% if service.invoice_number%} {{service.invoice_number }} {% else%} - {% endif %}</td>
-                    <td>{{service.created_at.date}}</td>
+                    <td>{{service.created_at.date|date:"F j"}}</td>
                     <td>
                         <a href="{% url 'service:service_details' service.id %}">
 

@@ -18,7 +18,7 @@
     hx-trigger="click" 
     hx-swap="innerHTML"
     hx-target="#displayData"
-    hx-get="/empty_htmx">
+    hx-get="/service/get_data?service=repair&data=all">
         <div class="card">
             <div class="card-body">
 
@@ -70,10 +70,8 @@
 </div>
 
 
-<div id="displayData">
 
-</div>
-<div class="card card-body">
+<div class="card card-body" id="displayData">
     <div class="table-responsive">
         <table class="table search-table " id="serviceTable">
             <thead class="header-item bg-dark text-light text-center">
@@ -100,7 +98,7 @@
 
                     <td>{{service.customer}}</td>
                     <td>{{service.phone_number}}</td>
-                    <td>{{service.created_at.date}}</td>
+                    <td>{{service.created_at.date|date:"F j"}}</td>
                     <td>{% if service.invoice_number %} {{service.invoice_number}} {% else %} - {% endif%}</td>
                     <td>
 

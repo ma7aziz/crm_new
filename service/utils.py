@@ -11,7 +11,7 @@ from . import models
 
 def generate_ref_number(service_type):
 
-    prefix = 'INS' if service_type == 'install' else 'REP'
+    prefix = 'N' if service_type == 'install' else 'R'
     year = str(datetime.now().year)[-2:]
 
     last_ref_number = models.Service.objects.filter(

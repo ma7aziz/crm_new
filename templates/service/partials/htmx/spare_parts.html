@@ -25,7 +25,7 @@
                     <td> {{service.service.customer}}</td>
                     <td>{{service.requested_parts}}</td>
                     <td>{{service.service.company}}</td>
-                    <td>{{service.created_at.date}}</td>
+                    <td>{{service.created_at.date|date:"F j"}}</td>
                     
                 </tr>
                 {% endfor %}

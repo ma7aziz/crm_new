@@ -11,8 +11,7 @@ urlpatterns = [
     path('archive' , views.Archive.as_view() , name='archive'),
     path('reports' , views.Reports.as_view() , name='reports'),
     path('index_data' , views.index_data , name='index_data'),
-    path('empty_htmx' , views.empty_htmx,name='empty_htmx' ), 
-    path('charts' , views.Charts.as_view() , name ='charts'),
+    
     path('service_chart' , views.ServiceChartView.as_view() , name='service_chart_view'),
     path('sales_performance_chart' , views.SalesPerformance.as_view() , name='sales_performance_chart'),
     path('daily_performance_chart' , views.DailyPerformance.as_view() , name='daily_performance_chart'),
