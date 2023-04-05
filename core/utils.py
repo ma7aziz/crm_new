@@ -4,6 +4,7 @@ from service.models import Service , Appointment
 from quarter.models import QuarterProject
 from django.utils import timezone
 from datetime import datetime
+import uuid
 
 def generate_report(start_date = None , end_date = None):
 
@@ -44,3 +45,4 @@ def generate_report(start_date = None , end_date = None):
         'top_sales': top_sales,
         'top_techs' : top_techs
     }
+    

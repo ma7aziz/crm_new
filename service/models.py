@@ -9,9 +9,17 @@ from django.utils import timezone
 from django.db.models import Case, When
 from .managers import ServiceManager, AppointmentManager
 from core.models import LateDays
-import os 
 import uuid
+import os 
 # Create your models here.
+    
+def get_file_path(instance, filename):
+    """Generate a unique filename for the uploaded file."""
+    ext = filename.split('.')[-1]
+    filename = f"{uuid.uuid4()[:8]}.{ext}"
+    return os.path.join('files/', filename)
+
+
 
 User = settings.AUTH_USER_MODEL
 
@@ -23,11 +31,6 @@ status_ordering = Case(
     output_field=models.IntegerField(),
 )
 
-def get_file_path(instance, filename):
-    """Generate a unique filename for the uploaded file."""
-    ext = filename.split('.')[-1]
-    filename = f"{uuid.uuid4()}.{ext}"
-    return os.path.join('files/', filename)
 
 
 class Service(models.Model):
@@ -121,7 +124,7 @@ class Appointment(models.Model):
 
 class ExcutionFile(models.Model):
     service = models.ForeignKey(Service, on_delete=models.CASCADE)
-    file = models.FileField(upload_to='service/exec_files/')
+    file = models.FileField(upload_to=get_file_path)
     cretaed_at = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 
@@ -146,7 +149,7 @@ class HoldReason(models.Model):
 
 class HoldFile(models.Model):
     hold_reason = models.ForeignKey(HoldReason, on_delete=models.CASCADE)
-    file = models.FileField(upload_to='service/hold_files')
+    file = models.FileField(upload_to=get_file_path)
     cretaed_at = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 

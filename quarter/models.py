@@ -3,7 +3,17 @@ from users.models import User
 from .choices import PORJECT_STATUS_CHOICES , NEGOTIATION_STATUS_CHOICES
 from datetime import datetime
 from django.db.models import Max
+import uuid
+import os 
 # Create your models here.
+    
+def get_file_path(instance, filename):
+    """Generate a unique filename for the uploaded file."""
+    ext = filename.split('.')[-1]
+    filename = f"{uuid.uuid4()[:8]}.{ext}"
+    return os.path.join('files/quarter', filename)
+
+
 
 def generate_ref_number():
     prefix = 'Q'
@@ -62,5 +72,5 @@ class ProjectFiles(models.Model):
 
 
 class File(models.Model):
-    file = models.FileField(upload_to='quarter/files')
+    file = models.FileField(upload_to=get_file_path)
     
